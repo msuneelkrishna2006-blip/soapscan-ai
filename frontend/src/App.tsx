@@ -116,9 +116,11 @@ export const App: React.FC = () => {
   const fetchInsights = async () => {
     setIsLoadingInsights(true);
     try {
+      const filteredInv = includeSample ? inventory : inventory.filter(i => !i.isSampleData);
+      const filteredEvts = includeSample ? usageEvents : usageEvents.filter(e => !e.isSampleData);
       const list = await getMonthlyInsights({
-        inventory,
-        usageEvents,
+        inventory: filteredInv,
+        usageEvents: filteredEvts,
         currentMonth: targetMonth,
       });
       setInsights(list);
@@ -130,10 +132,8 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
-    if (inventory.length > 0 || usageEvents.length > 0) {
-      fetchInsights();
-    }
-  }, [inventory.length, usageEvents.length, targetMonth]);
+    fetchInsights();
+  }, [inventory, usageEvents, targetMonth, includeSample]);
 
   const handleItemAdded = async (newItem: InventoryItem) => {
     try {

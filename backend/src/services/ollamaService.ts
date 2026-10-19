@@ -354,8 +354,8 @@ Generate 3 to 4 concise, explainable, data-backed household consumption insights
       "id": "insight-1",
       "category": "efficiency" | "pacing" | "depletion" | "financial",
       "title": "string",
-      "message": "string (explainable observation citing actual numbers)",
-      "metric": "string (e.g. '+12% vs avg', '5 days left')",
+      "message": "string (explainable observation citing actual numbers: ${solidG.toFixed(1)}g, ${liquidMl.toFixed(1)}mL, ${activeCount} items)",
+      "metric": "string (e.g. '${solidG.toFixed(0)}g total', '${activeCount} active')",
       "recommendation": "string (actionable advice)",
       "confidence": number (0.8 - 0.99)
     }
@@ -391,13 +391,49 @@ Return ONLY valid JSON.`;
     console.warn('[ollamaService] Gemma 4 insights busy or timed out, generating deterministic fallback insights:', err);
   }
 
-  // Deterministic math fallback
+  // If no usage recorded this month (e.g. sample data unchecked and no real logs yet)
+  if (monthEvents.length === 0) {
+    return [
+      {
+        id: 'ins-zero-1',
+        category: 'pacing',
+        title: 'Telemetry Ready for First Measurement',
+        message: `No usage events recorded for ${month} with current filters (0 g consumed). Place a soap bar on your digital scale or log liquid pumps to initiate real-time burn rate telemetry.`,
+        metric: '0 g total',
+        recommendation: 'Log baseline soap weight to establish depletion predictions.',
+        confidence: 0.99,
+      },
+      {
+        id: 'ins-zero-2',
+        category: 'depletion',
+        title: 'Inventory Baseline Established',
+        message: `${activeCount} active soap product${activeCount === 1 ? '' : 's'} available in household inventory. Pacing forecasts will activate upon recording initial usage.`,
+        metric: `${activeCount} items active`,
+        recommendation: 'Use the 3D Holographic Scanner to register any new bathroom soaps.',
+        confidence: 0.95,
+      },
+      {
+        id: 'ins-zero-3',
+        category: 'efficiency',
+        title: 'Calibrated Pump Metering Ready',
+        message: 'Liquid dispensers are configured for 1.5 mL standard pump yields. Tracking dispenses saves up to 25% vs uncalibrated bar wear.',
+        metric: '1.5 mL/pump',
+        recommendation: 'Keep dispenser pumps primed for accurate micro-dosing.',
+        confidence: 0.96,
+      },
+    ];
+  }
+
+  // Deterministic math fallback citing actual numbers
+  const daysInMonthToDate = Math.min(new Date().getDate(), 30);
+  const dailyBurn = daysInMonthToDate > 0 ? (solidG / daysInMonthToDate) : 0;
+
   return [
     {
       id: 'ins-det-1',
       category: 'pacing',
       title: 'Solid Soap Burn Rate Normalized',
-      message: `Household has consumed ${solidG.toFixed(1)}g of solid bar soap in ${month}. Daily burn rate is steady at ~${(solidG / 18).toFixed(1)}g/day across active bathrooms.`,
+      message: `Household has consumed ${solidG.toFixed(1)}g of solid bar soap in ${month}. Daily burn rate is steady at ~${dailyBurn.toFixed(1)}g/day across active bathrooms.`,
       metric: `${solidG.toFixed(0)}g total`,
       recommendation: 'Ensure soap dishes have proper drainage to prevent water erosion loss.',
       confidence: 0.95,
@@ -408,7 +444,7 @@ Return ONLY valid JSON.`;
       title: 'Active Stock Replenishment Alert',
       message: `With ${activeCount} products currently open, at current consumption patterns your household has approximately 18-24 days of supply before restock is required.`,
       metric: `${activeCount} items active`,
-      recommendation: 'Replenish guest bathroom bar soap before stock dips below 15g.',
+      recommendation: 'Replenish bathroom soap before stock dips below 15g.',
       confidence: 0.92,
     },
     {
