@@ -1,0 +1,342 @@
+{
+  "familyMembers": [
+    {
+      "id": "mem-1",
+      "name": "Sunil (Self)",
+      "avatar": "👨‍💻",
+      "role": "Admin",
+      "notes": "Uses Master Bathroom",
+      "createdAt": "2026-09-01T08:00:00.000Z"
+    },
+    {
+      "id": "mem-2",
+      "name": "Priya",
+      "avatar": "👩‍⚕️",
+      "role": "Adult",
+      "notes": "Prefers moisturising bars",
+      "createdAt": "2026-09-01T08:00:00.000Z"
+    },
+    {
+      "id": "mem-3",
+      "name": "Aarav",
+      "avatar": "👦",
+      "role": "Child",
+      "notes": "Kids bathroom, liquid pump",
+      "createdAt": "2026-09-01T08:00:00.000Z"
+    },
+    {
+      "id": "mem-4",
+      "name": "Guest Bathroom",
+      "avatar": "🚿",
+      "role": "Guest",
+      "notes": "Shared guest washroom",
+      "createdAt": "2026-09-01T08:00:00.000Z"
+    }
+  ],
+  "inventoryItems": [
+    {
+      "id": "item-1",
+      "brand": "Dove",
+      "name": "Beauty Moisture Bathing Bar",
+      "variant": "White / 1/4 Moisturising Cream",
+      "productType": "soap_bar",
+      "initialQuantity": 100,
+      "remainingQuantity": 42,
+      "unit": "g",
+      "tareWeightG": 28,
+      "costInr": 65,
+      "location": "Master Bathroom",
+      "assignedMemberId": "mem-1",
+      "barcode": "8901030383457",
+      "status": "active",
+      "isSampleData": true,
+      "createdAt": "2026-10-01T09:00:00.000Z",
+      "updatedAt": "2026-10-18T14:30:00.000Z"
+    },
+    {
+      "id": "item-2",
+      "brand": "Dettol",
+      "name": "Original Germ Protection Soap",
+      "variant": "Pine Fragrance",
+      "productType": "soap_bar",
+      "initialQuantity": 125,
+      "remainingQuantity": 18,
+      "unit": "g",
+      "tareWeightG": 30,
+      "costInr": 58,
+      "location": "Guest Bathroom",
+      "assignedMemberId": "mem-4",
+      "barcode": "8901396115203",
+      "status": "active",
+      "isSampleData": true,
+      "createdAt": "2026-10-02T10:00:00.000Z",
+      "updatedAt": "2026-10-18T18:00:00.000Z"
+    },
+    {
+      "id": "item-3",
+      "brand": "Pears",
+      "name": "Pure & Gentle Glycerine Bar",
+      "variant": "Natural Oils 100% Soap Free",
+      "productType": "soap_bar",
+      "initialQuantity": 125,
+      "remainingQuantity": 88,
+      "unit": "g",
+      "tareWeightG": 25,
+      "costInr": 82,
+      "location": "Master Bathroom",
+      "assignedMemberId": "mem-2",
+      "barcode": "8901030704986",
+      "status": "active",
+      "isSampleData": true,
+      "createdAt": "2026-10-05T11:00:00.000Z",
+      "updatedAt": "2026-10-17T09:15:00.000Z"
+    },
+    {
+      "id": "item-4",
+      "brand": "Lifebuoy",
+      "name": "Total 10 Germ Protection Handwash",
+      "variant": "Liquid Handwash Pump",
+      "productType": "liquid_handwash",
+      "initialQuantity": 200,
+      "remainingQuantity": 95,
+      "unit": "ml",
+      "tareWeightG": 45,
+      "costInr": 99,
+      "location": "Kids Bathroom",
+      "assignedMemberId": "mem-3",
+      "barcode": "8901030800001",
+      "status": "active",
+      "isSampleData": true,
+      "createdAt": "2026-10-01T08:30:00.000Z",
+      "updatedAt": "2026-10-18T19:30:00.000Z"
+    },
+    {
+      "id": "item-5",
+      "brand": "Santoor",
+      "name": "Sandal & Turmeric Soap",
+      "variant": "Traditional Glow",
+      "productType": "soap_bar",
+      "initialQuantity": 100,
+      "remainingQuantity": 0,
+      "unit": "g",
+      "tareWeightG": 28,
+      "costInr": 45,
+      "location": "Guest Bathroom",
+      "assignedMemberId": "mem-4",
+      "barcode": "8901030005434",
+      "status": "finished",
+      "isSampleData": true,
+      "createdAt": "2026-09-10T10:00:00.000Z",
+      "updatedAt": "2026-10-01T12:00:00.000Z",
+      "finishedAt": "2026-10-01T12:00:00.000Z"
+    }
+  ],
+  "usageEvents": [
+    {
+      "id": "evt-1",
+      "productId": "item-1",
+      "memberId": "mem-1",
+      "consumedQuantity": 6.5,
+      "unit": "g",
+      "previousQuantity": 100,
+      "newQuantity": 93.5,
+      "method": "SCALE",
+      "scaleReading": 121.5,
+      "tareWeight": 28,
+      "isSampleData": true,
+      "createdAt": "2026-10-03T08:15:00.000Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-03T08:15:00.000Z",
+          "action": "CREATED"
+        }
+      ]
+    },
+    {
+      "id": "evt-2",
+      "productId": "item-1",
+      "memberId": "mem-1",
+      "consumedQuantity": 14.5,
+      "unit": "g",
+      "previousQuantity": 93.5,
+      "newQuantity": 79,
+      "method": "SCALE",
+      "scaleReading": 107,
+      "tareWeight": 28,
+      "isSampleData": true,
+      "createdAt": "2026-10-08T08:30:00.000Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-08T08:30:00.000Z",
+          "action": "CREATED"
+        }
+      ]
+    },
+    {
+      "id": "evt-3",
+      "productId": "item-1",
+      "memberId": "mem-1",
+      "consumedQuantity": 18,
+      "unit": "g",
+      "previousQuantity": 79,
+      "newQuantity": 61,
+      "method": "SCALE",
+      "scaleReading": 89,
+      "tareWeight": 28,
+      "isSampleData": true,
+      "createdAt": "2026-10-13T09:00:00.000Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-13T09:00:00.000Z",
+          "action": "CREATED"
+        }
+      ]
+    },
+    {
+      "id": "evt-4",
+      "productId": "item-1",
+      "memberId": "mem-1",
+      "consumedQuantity": 19,
+      "unit": "g",
+      "previousQuantity": 61,
+      "newQuantity": 42,
+      "method": "SCALE",
+      "scaleReading": 70,
+      "tareWeight": 28,
+      "isSampleData": true,
+      "createdAt": "2026-10-18T14:30:00.000Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-18T14:30:00.000Z",
+          "action": "CREATED"
+        }
+      ]
+    },
+    {
+      "id": "evt-5",
+      "productId": "item-2",
+      "memberId": "mem-4",
+      "consumedQuantity": 35,
+      "unit": "g",
+      "previousQuantity": 125,
+      "newQuantity": 90,
+      "method": "MANUAL",
+      "isSampleData": true,
+      "createdAt": "2026-10-06T11:00:00.000Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-06T11:00:00.000Z",
+          "action": "CREATED"
+        }
+      ]
+    },
+    {
+      "id": "evt-6",
+      "productId": "item-2",
+      "memberId": "mem-4",
+      "consumedQuantity": 42,
+      "unit": "g",
+      "previousQuantity": 90,
+      "newQuantity": 48,
+      "method": "SCALE",
+      "scaleReading": 78,
+      "tareWeight": 30,
+      "isSampleData": true,
+      "createdAt": "2026-10-12T16:00:00.000Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-12T16:00:00.000Z",
+          "action": "CREATED"
+        }
+      ]
+    },
+    {
+      "id": "evt-7",
+      "productId": "item-2",
+      "memberId": "mem-4",
+      "consumedQuantity": 30,
+      "unit": "g",
+      "previousQuantity": 48,
+      "newQuantity": 18,
+      "method": "SCALE",
+      "scaleReading": 48,
+      "tareWeight": 30,
+      "isSampleData": true,
+      "createdAt": "2026-10-18T18:00:00.000Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-18T18:00:00.000Z",
+          "action": "CREATED"
+        }
+      ]
+    },
+    {
+      "id": "evt-8",
+      "productId": "item-3",
+      "memberId": "mem-2",
+      "consumedQuantity": 37,
+      "unit": "g",
+      "previousQuantity": 125,
+      "newQuantity": 88,
+      "method": "SCALE",
+      "scaleReading": 113,
+      "tareWeight": 25,
+      "isSampleData": true,
+      "createdAt": "2026-10-17T09:15:00.000Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-17T09:15:00.000Z",
+          "action": "CREATED"
+        }
+      ]
+    },
+    {
+      "id": "evt-9",
+      "productId": "item-4",
+      "memberId": "mem-3",
+      "consumedQuantity": 45,
+      "unit": "ml",
+      "previousQuantity": 200,
+      "newQuantity": 155,
+      "method": "PUMP_ESTIMATE",
+      "pumpCount": 30,
+      "mlPerPump": 1.5,
+      "isSampleData": true,
+      "createdAt": "2026-10-09T18:30:00.000Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-09T18:30:00.000Z",
+          "action": "CREATED"
+        }
+      ]
+    },
+    {
+      "id": "evt-10",
+      "productId": "item-4",
+      "memberId": "mem-3",
+      "consumedQuantity": 60,
+      "unit": "ml",
+      "previousQuantity": 155,
+      "newQuantity": 95,
+      "method": "PUMP_ESTIMATE",
+      "pumpCount": 40,
+      "mlPerPump": 1.5,
+      "isSampleData": true,
+      "createdAt": "2026-10-18T19:30:00.000Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-18T19:30:00.000Z",
+          "action": "CREATED"
+        }
+      ]
+    }
+  ],
+  "notificationPrefs": {
+    "id": "pref-default",
+    "lowStockThresholdPercent": 20,
+    "depletionWarningDays": 5,
+    "staleMeasurementAlertDays": 7,
+    "browserNotificationsEnabled": true,
+    "updatedAt": "2026-10-01T08:00:00.000Z"
+  }
+}
