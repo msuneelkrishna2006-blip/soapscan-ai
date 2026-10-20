@@ -12,7 +12,17 @@ import {
   AutoDetectResult,
 } from '../types/soap';
 
-const BASE_URL = '/api';
+const RAW_BACKEND_URL = (
+  ((import.meta as any)?.env?.VITE_API_URL as string | undefined) ||
+  ((import.meta as any)?.env?.VITE_BACKEND_URL as string | undefined) ||
+  ''
+).trim();
+
+const BASE_URL = RAW_BACKEND_URL
+  ? RAW_BACKEND_URL.endsWith('/api')
+    ? RAW_BACKEND_URL
+    : `${RAW_BACKEND_URL.replace(/\/+$/, '')}/api`
+  : '/api';
 
 export function getAuthToken(): string | null {
   return localStorage.getItem('soapscan_token');
