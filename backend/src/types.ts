@@ -163,6 +163,8 @@ export interface AIStatus {
   endpoint: string;
   visionCapable?: boolean;
   hasRequiredModel?: boolean;
+  mode?: string;
+  latencyMs?: number;
   error?: string;
 }
 
