@@ -15,11 +15,13 @@ import {
 } from 'lucide-react';
 import { InventoryItem, FamilyMember, ProductType, ItemStatus } from '../types/soap';
 import { SoapDigitalTwin3D } from './three/SoapDigitalTwin3D';
+import { motion } from 'framer-motion';
+import { tableRowSlide } from '../lib/motionVariants';
 
 interface InventoryManagerProps {
   inventory: InventoryItem[];
   familyMembers: FamilyMember[];
-  includeSample: boolean;
+  includeSample?: boolean;
   onOpenScanModal: () => void;
   onOpenLogModal: (item: InventoryItem) => void;
   onDeleteItem: (id: string) => Promise<void>;
@@ -29,7 +31,6 @@ interface InventoryManagerProps {
 export const InventoryManager: React.FC<InventoryManagerProps> = ({
   inventory,
   familyMembers,
-  includeSample,
   onOpenScanModal,
   onOpenLogModal,
   onDeleteItem,
@@ -42,7 +43,6 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
   const [inspectingTwinItem, setInspectingTwinItem] = useState<InventoryItem | null>(null);
 
   const filteredItems = inventory.filter(item => {
-    if (!includeSample && item.isSampleData) return false;
     if (typeFilter !== 'all' && item.productType !== typeFilter) return false;
     if (statusFilter !== 'all' && item.status !== statusFilter) return false;
     if (search.trim()) {
@@ -145,7 +145,7 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
                   </td>
                 </tr>
               ) : (
-                filteredItems.map(item => {
+                filteredItems.map((item, idx) => {
                   const remainingPct =
                     item.initialQuantity > 0
                       ? Math.round((item.remainingQuantity / item.initialQuantity) * 100)
@@ -153,9 +153,13 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
                   const member = familyMembers.find(m => m.id === item.assignedMemberId);
 
                   return (
-                    <tr
+                    <motion.tr
                       key={item.id}
-                      className="hover:bg-slate-50/60 dark:hover:bg-obsidian-700/40 transition"
+                      variants={tableRowSlide}
+                      initial="initial"
+                      animate="animate"
+                      transition={{ delay: idx * 0.03, duration: 0.25, ease: 'easeOut' }}
+                      className="hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all cursor-default"
                     >
                       <td className="py-3.5 px-4">
                         <div className="font-bold text-slate-900 dark:text-white">
@@ -166,11 +170,6 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
                           {item.barcode && (
                             <span className="font-mono flex items-center gap-1 text-[10px] text-slate-500">
                               <Barcode className="w-3 h-3" /> {item.barcode}
-                            </span>
-                          )}
-                          {item.isSampleData && (
-                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-slate-200 dark:bg-obsidian-700 text-slate-600 dark:text-slate-400">
-                              SAMPLE
                             </span>
                           )}
                         </div>
@@ -275,7 +274,7 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
                           </button>
                         </div>
                       </td>
-                    </tr>
+                    </motion.tr>
                   );
                 })
               )}

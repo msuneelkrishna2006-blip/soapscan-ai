@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import {
   InventoryItem,
   UsageEvent,
@@ -6,8 +7,11 @@ import {
   NotificationPrefs,
   AIStatus,
   AIInsight,
+  UserProfile,
 } from './types/soap';
 import {
+  getCurrentUser,
+  logoutUser,
   getAppState,
   getAIStatus,
   getMonthlyInsights,
@@ -16,11 +20,13 @@ import {
   deleteInventoryItem,
   logUsageEvent,
   addFamilyMember,
-  resetSampleData,
   exportUsageEventsToCSV,
 } from './lib/api';
+import { useRealtimeTelemetry } from './lib/useRealtimeTelemetry';
 import { Navbar } from './components/Navbar';
 import { DashboardView } from './components/DashboardView';
+import { CosmicHomePage } from './components/views/CosmicHomePage';
+import { CosmicLoginPage } from './components/views/CosmicLoginPage';
 import { InventoryManager } from './components/InventoryManager';
 import { UsageHistory } from './components/UsageHistory';
 import { AnalyticsCharts } from './components/AnalyticsCharts';
@@ -28,14 +34,27 @@ import { FamilyManager } from './components/FamilyManager';
 import { ScanSoapModal } from './components/ScanSoapModal';
 import { LogUsageModal } from './components/LogUsageModal';
 import { SettingsModal } from './components/SettingsModal';
-import { AmbientBubbleField3D } from './components/three/AmbientBubbleField3D';
+import { CosmicUniverse3D } from './components/three/CosmicUniverse3D';
+import { AmbientParticles } from './components/animation/AmbientParticles';
+import { PageTransition } from './components/animation/PageTransition';
+import { ToastContainer, ToastMessage } from './components/animation/ToastNotification';
 
 export const App: React.FC = () => {
+  // Authentication state
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [isAuthChecking, setIsAuthChecking] = useState<boolean>(true);
+
+  // Cosmic 3D Ambient Canvas Intensity & Warp state
+  const [cosmicIntensity, setCosmicIntensity] = useState<'low' | 'medium' | 'high'>('medium');
+  const [isWarping, setIsWarping] = useState<boolean>(false);
+
+  // Authentic User-Scoped Data States (100% Real User Data)
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [usageEvents, setUsageEvents] = useState<UsageEvent[]>([]);
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [notificationPrefs, setNotificationPrefs] = useState<NotificationPrefs>({
     id: 'default',
+    userId: '',
     lowStockThresholdPercent: 20,
     depletionWarningDays: 5,
     staleMeasurementAlertDays: 7,
@@ -48,10 +67,9 @@ export const App: React.FC = () => {
   const [isLoadingInsights, setIsLoadingInsights] = useState(false);
 
   const [currentView, setCurrentView] = useState<
-    'dashboard' | 'inventory' | 'history' | 'analytics' | 'family'
-  >('dashboard');
+    'home' | 'dashboard' | 'inventory' | 'history' | 'analytics' | 'family'
+  >('home');
   const [targetMonth, setTargetMonth] = useState<string>('2026-10');
-  const [includeSample, setIncludeSample] = useState<boolean>(true);
   const [isDark, setIsDark] = useState<boolean>(true);
 
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
@@ -59,6 +77,22 @@ export const App: React.FC = () => {
   const [selectedSoapItem, setSelectedSoapItem] = useState<InventoryItem | null>(null);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
+  // Award-Quality Toast Notification State
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  const addToast = useCallback(
+    (title: string, message?: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
+      const id = `toast-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+      setToasts(prev => [...prev.slice(-3), { id, title, message, type, duration: 4000 }]);
+    },
+    []
+  );
+
+  const removeToast = useCallback((id: string) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  }, []);
+
+  // Theme synchronization
   useEffect(() => {
     const savedTheme = localStorage.getItem('soapscan_theme');
     const prefersDark = savedTheme ? savedTheme === 'dark' : true;
@@ -83,7 +117,37 @@ export const App: React.FC = () => {
     });
   };
 
-  const loadData = async () => {
+  // Check existing session on boot
+  useEffect(() => {
+    getCurrentUser()
+      .then(user => {
+        setCurrentUser(user);
+        if (user) {
+          setCurrentView('dashboard');
+        }
+      })
+      .finally(() => {
+        setIsAuthChecking(false);
+      });
+  }, []);
+
+  // AI status check
+  useEffect(() => {
+    getAIStatus()
+      .then(status => setAiStatus(status))
+      .catch(() => {});
+
+    const interval = setInterval(() => {
+      getAIStatus()
+        .then(status => setAiStatus(status))
+        .catch(() => {});
+    }, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Load authenticated user's state
+  const loadUserData = useCallback(async () => {
+    if (!currentUser) return;
     try {
       const state = await getAppState();
       setInventory(state.inventoryItems || []);
@@ -93,95 +157,175 @@ export const App: React.FC = () => {
         setNotificationPrefs(state.notificationPrefs);
       }
     } catch (err) {
-      console.error('Failed to load state from backend:', err);
+      console.error('Failed to load user state:', err);
     }
-
-    try {
-      const status = await getAIStatus();
-      setAiStatus(status);
-    } catch (err) {
-      console.warn('AI status check failed:', err);
-    }
-  };
+  }, [currentUser]);
 
   useEffect(() => {
-    loadData();
-    const interval = setInterval(async () => {
-      const status = await getAIStatus();
-      setAiStatus(status);
-    }, 15000);
-    return () => clearInterval(interval);
-  }, []);
+    if (currentUser) {
+      loadUserData();
+    }
+  }, [currentUser, loadUserData]);
 
-  const fetchInsights = async () => {
-    setIsLoadingInsights(true);
-    try {
-      const filteredInv = includeSample ? inventory : inventory.filter(i => !i.isSampleData);
-      const filteredEvts = includeSample ? usageEvents : usageEvents.filter(e => !e.isSampleData);
-      const list = await getMonthlyInsights({
-        inventory: filteredInv,
-        usageEvents: filteredEvts,
-        currentMonth: targetMonth,
+  // Real-Time Server-Sent Events (SSE) telemetry hook
+  const { telemetry, triggerQuickAction } = useRealtimeTelemetry({
+    userId: currentUser?.id,
+    onItemAdded: item => {
+      setInventory(prev => {
+        if (prev.some(i => i.id === item.id)) return prev;
+        return [item, ...prev];
       });
-      setInsights(list);
-    } catch (err) {
-      console.error('Error fetching monthly insights:', err);
-    } finally {
-      setIsLoadingInsights(false);
-    }
-  };
+    },
+    onItemUpdated: item => {
+      setInventory(prev => prev.map(i => (i.id === item.id ? item : i)));
+    },
+    onItemDeleted: deletedId => {
+      setInventory(prev => prev.filter(i => i.id !== deletedId));
+      setUsageEvents(prev => prev.filter(e => e.productId !== deletedId));
+    },
+    onUsageLogged: data => {
+      setUsageEvents(prev => [data.event, ...prev]);
+      setInventory(prev =>
+        prev.map(i => (i.id === data.updatedProduct.id ? data.updatedProduct : i))
+      );
+    },
+  });
+
+  // Fetch Gemma 4 Explainable Insights
+  const fetchInsights = useCallback(
+    async (customPrompt?: string) => {
+      if (!currentUser) return;
+      setIsLoadingInsights(true);
+      try {
+        const list = await getMonthlyInsights({
+          inventory,
+          usageEvents,
+          currentMonth: targetMonth,
+        });
+        setInsights(list);
+      } catch (err) {
+        console.error('Error fetching monthly insights:', err);
+      } finally {
+        setIsLoadingInsights(false);
+      }
+    },
+    [currentUser, inventory, usageEvents, targetMonth]
+  );
 
   useEffect(() => {
-    fetchInsights();
-  }, [inventory, usageEvents, targetMonth, includeSample]);
-
-  const handleItemAdded = async (newItem: InventoryItem) => {
-    try {
-      const saved = await addInventoryItem(newItem);
-      setInventory(prev => [saved, ...prev]);
-    } catch (err: any) {
-      alert('Failed to save item: ' + err.message);
+    if (currentUser && (inventory.length > 0 || usageEvents.length > 0)) {
+      fetchInsights();
+    } else {
+      setInsights([]);
     }
+  }, [currentUser, inventory.length, usageEvents.length, fetchInsights]);
+
+  // Handle Inventory Actions
+  const handleItemAdded = async (newItem: InventoryItem) => {
+    setInventory(prev => [newItem, ...prev]);
+    setIsScanModalOpen(false);
+    addToast(
+      'Soap Added to Inventory',
+      `${newItem.brand} ${newItem.name} (${newItem.initialQuantity}${newItem.unit}) registered.`,
+      'success'
+    );
   };
 
   const handleUpdateItem = async (id: string, updates: Partial<InventoryItem>) => {
     try {
       const updated = await updateInventoryItem(id, updates);
-      setInventory(prev => prev.map(item => (item.id === id ? updated : item)));
-    } catch (err: any) {
-      alert('Failed to update item: ' + err.message);
+      setInventory(prev => prev.map(i => (i.id === id ? updated : i)));
+      addToast('Soap Specs Updated', `${updated.brand} ${updated.name}`, 'info');
+    } catch (err) {
+      console.error('Failed to update soap item:', err);
+      addToast('Update Failed', 'Could not update soap specs', 'error');
     }
   };
 
   const handleDeleteItem = async (id: string) => {
     try {
       await deleteInventoryItem(id);
-      setInventory(prev => prev.filter(item => item.id !== id));
-      setUsageEvents(prev => prev.filter(event => event.productId !== id));
-    } catch (err: any) {
-      alert('Failed to delete item: ' + err.message);
+      setInventory(prev => prev.filter(i => i.id !== id));
+      setUsageEvents(prev => prev.filter(e => e.productId !== id));
+      addToast('Soap Removed', 'Item removed from household inventory', 'warning');
+    } catch (err) {
+      console.error('Failed to delete soap item:', err);
+      addToast('Delete Failed', 'Could not remove item', 'error');
     }
   };
 
-  const handleLogSaved = async (payload: Partial<UsageEvent>) => {
-    const { event, updatedProduct } = await logUsageEvent(payload);
-    setUsageEvents(prev => [event, ...prev]);
-    setInventory(prev => prev.map(i => (i.id === updatedProduct.id ? updatedProduct : i)));
+  const handleLogSaved = async (eventData: Partial<UsageEvent>) => {
+    try {
+      const result = await logUsageEvent(eventData);
+      setUsageEvents(prev => [result.event, ...prev]);
+      setInventory(prev =>
+        prev.map(i => (i.id === result.updatedProduct.id ? result.updatedProduct : i))
+      );
+      setIsLogModalOpen(false);
+      setSelectedSoapItem(null);
+      addToast(
+        'Usage Event Logged',
+        `${result.event.consumedQuantity}${result.event.unit} logged successfully`,
+        'success'
+      );
+    } catch (err) {
+      console.error('Failed to save log event:', err);
+      addToast('Log Failed', 'Could not record usage event', 'error');
+    }
   };
 
-  const handleAddMember = async (member: Partial<FamilyMember>) => {
-    const saved = await addFamilyMember(member);
-    setFamilyMembers(prev => [...prev, saved]);
+  const handleLogQuickUsage = async (
+    productId: string,
+    amount: number,
+    method: 'SCALE' | 'PUMP_ESTIMATE'
+  ) => {
+    try {
+      const action = method === 'PUMP_ESTIMATE' ? 'pump' : 'bar_wash';
+      await triggerQuickAction({ itemId: productId, action, amount });
+      addToast('Quick Usage Logged', `${amount > 0 ? `-${amount}` : amount} recorded`, 'info');
+    } catch (err) {
+      console.error('Failed to log quick usage:', err);
+      addToast('Telemetry Error', 'Failed to log quick usage', 'error');
+    }
   };
 
-  const handleResetSampleData = async (action: 'restore' | 'purge') => {
-    const updatedState = await resetSampleData(action);
-    setInventory(updatedState.inventoryItems);
-    setUsageEvents(updatedState.usageEvents);
+  const handleAddMember = async (newMember: Partial<FamilyMember>) => {
+    try {
+      const created = await addFamilyMember(newMember);
+      setFamilyMembers(prev => [...prev, created]);
+    } catch (err) {
+      console.error('Failed to add family member:', err);
+    }
   };
 
-  const openLogModal = (item: InventoryItem) => {
-    setSelectedSoapItem(item);
+  const handleLogout = async () => {
+    await logoutUser();
+    setCurrentUser(null);
+    setInventory([]);
+    setUsageEvents([]);
+    setFamilyMembers([]);
+    setCurrentView('home');
+  };
+
+  const handleAuthSuccess = (user: UserProfile) => {
+    setCurrentUser(user);
+    setIsWarping(true);
+    setTimeout(() => {
+      setIsWarping(false);
+      setCurrentView('dashboard');
+    }, 1200);
+  };
+
+  const handleLaunchDashboardFromHome = () => {
+    setIsWarping(true);
+    setTimeout(() => {
+      setIsWarping(false);
+      setCurrentView('dashboard');
+    }, 900);
+  };
+
+  const openLogModal = (item?: InventoryItem) => {
+    setSelectedSoapItem(item || null);
     setIsLogModalOpen(true);
   };
 
@@ -189,10 +333,48 @@ export const App: React.FC = () => {
     ? usageEvents.find(e => e.productId === selectedSoapItem.id)?.createdAt
     : undefined;
 
+  if (isAuthChecking) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center relative overflow-hidden">
+        <CosmicUniverse3D intensity="low" showSoapCore={false} />
+        <div className="flex flex-col items-center gap-4 relative z-10">
+          <div className="w-12 h-12 border-3 border-teal-400 border-t-transparent rounded-full animate-spin" />
+          <span className="font-mono text-xs text-teal-300 tracking-widest uppercase animate-pulse">
+            Booting 3D Cosmic Telemetry...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is not authenticated, render 3D Cosmic Login Portal
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-[#03090E] text-slate-100 flex flex-col relative overflow-hidden select-none">
+        <CosmicUniverse3D
+          warpActive={isWarping}
+          intensity={cosmicIntensity}
+          showSoapCore={true}
+          interactiveParallax={true}
+        />
+        <CosmicLoginPage
+          onAuthSuccess={handleAuthSuccess}
+          aiStatus={aiStatus}
+          onWarpStart={() => setIsWarping(true)}
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-obsidian-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200 relative overflow-hidden">
-      {/* 3D Volumetric Floating Soap Bubbles */}
-      <AmbientBubbleField3D />
+    <div className="min-h-screen bg-[#03090E] text-slate-100 flex flex-col font-sans transition-colors duration-200 relative overflow-x-hidden select-none">
+      {/* Full-Viewport 3D Cosmic Universe Background */}
+      <CosmicUniverse3D
+        warpActive={isWarping}
+        intensity={cosmicIntensity}
+        showSoapCore={currentView === 'home'}
+        interactiveParallax={true}
+      />
 
       <Navbar
         currentView={currentView}
@@ -203,81 +385,104 @@ export const App: React.FC = () => {
         aiStatus={aiStatus}
         targetMonth={targetMonth}
         onTargetMonthChange={setTargetMonth}
-        includeSample={includeSample}
-        onToggleIncludeSample={setIncludeSample}
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
+        currentUser={currentUser}
+        onLogout={handleLogout}
+        cosmicIntensity={cosmicIntensity}
+        onChangeCosmicIntensity={setCosmicIntensity}
       />
 
+      {/* Sparse Animated Teal & Gold Depth Particles with Reduced-Motion Fallback */}
+      <AmbientParticles density={cosmicIntensity === 'low' ? 'low' : 'medium'} />
+
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 relative z-10">
-        {currentView === 'dashboard' && (
-          <DashboardView
-            inventory={inventory}
-            usageEvents={usageEvents}
-            familyMembers={familyMembers}
-            notificationPrefs={notificationPrefs}
-            targetMonth={targetMonth}
-            includeSample={includeSample}
-            insights={insights}
-            isLoadingInsights={isLoadingInsights}
-            onRefreshInsights={fetchInsights}
-            onOpenScanModal={() => setIsScanModalOpen(true)}
-            onOpenLogModal={openLogModal}
-          />
-        )}
+        <AnimatePresence mode="wait">
+          <PageTransition key={currentView} viewKey={currentView}>
+            {currentView === 'home' && (
+              <CosmicHomePage
+                aiStatus={aiStatus}
+                onLaunchDashboard={handleLaunchDashboardFromHome}
+                onOpenScanModal={() => setIsScanModalOpen(true)}
+              />
+            )}
 
-        {currentView === 'inventory' && (
-          <InventoryManager
-            inventory={inventory}
-            familyMembers={familyMembers}
-            includeSample={includeSample}
-            onOpenScanModal={() => setIsScanModalOpen(true)}
-            onOpenLogModal={openLogModal}
-            onDeleteItem={handleDeleteItem}
-            onUpdateItem={handleUpdateItem}
-          />
-        )}
+            {currentView === 'dashboard' && (
+              <DashboardView
+                currentUser={currentUser}
+                inventory={inventory}
+                usageEvents={usageEvents}
+                familyMembers={familyMembers}
+                notificationPrefs={notificationPrefs}
+                targetMonth={targetMonth}
+                insights={insights}
+                isLoadingInsights={isLoadingInsights}
+                onRefreshInsights={fetchInsights}
+                onOpenScanModal={() => setIsScanModalOpen(true)}
+                onOpenLogModal={openLogModal}
+                onUpdateItem={handleUpdateItem}
+                onDeleteItem={handleDeleteItem}
+                onLogQuickUsage={handleLogQuickUsage}
+                aiStatus={aiStatus}
+                telemetryLatencyMs={telemetry.latencyMs}
+                isRealtimeConnected={telemetry.isConnected}
+                onQuickAction={triggerQuickAction}
+              />
+            )}
 
-        {currentView === 'history' && (
-          <UsageHistory
-            usageEvents={usageEvents}
-            inventory={inventory}
-            familyMembers={familyMembers}
-            includeSample={includeSample}
-          />
-        )}
+            {currentView === 'inventory' && (
+              <InventoryManager
+                inventory={inventory}
+                familyMembers={familyMembers}
+                onOpenScanModal={() => setIsScanModalOpen(true)}
+                onOpenLogModal={openLogModal}
+                onDeleteItem={handleDeleteItem}
+                onUpdateItem={handleUpdateItem}
+              />
+            )}
 
-        {currentView === 'analytics' && (
-          <AnalyticsCharts
-            inventory={inventory}
-            usageEvents={usageEvents}
-            familyMembers={familyMembers}
-            targetMonth={targetMonth}
-            includeSample={includeSample}
-          />
-        )}
+            {currentView === 'history' && (
+              <UsageHistory
+                usageEvents={usageEvents}
+                inventory={inventory}
+                familyMembers={familyMembers}
+              />
+            )}
 
-        {currentView === 'family' && (
-          <FamilyManager
-            familyMembers={familyMembers}
-            inventory={inventory}
-            usageEvents={usageEvents}
-            onAddMember={handleAddMember}
-          />
-        )}
+            {currentView === 'analytics' && (
+              <AnalyticsCharts
+                inventory={inventory}
+                usageEvents={usageEvents}
+                familyMembers={familyMembers}
+                targetMonth={targetMonth}
+              />
+            )}
+
+            {currentView === 'family' && (
+              <FamilyManager
+                familyMembers={familyMembers}
+                inventory={inventory}
+                usageEvents={usageEvents}
+                onAddMember={handleAddMember}
+              />
+            )}
+          </PageTransition>
+        </AnimatePresence>
       </main>
 
-      <footer className="mt-auto border-t border-slate-200 dark:border-obsidian-800 bg-white/90 dark:bg-obsidian-950/90 backdrop-blur py-4 text-center text-xs text-slate-500 dark:text-slate-400 relative z-10">
+      <footer className="mt-auto border-t border-teal-900/40 bg-obsidian-950/90 backdrop-blur py-4 text-center text-xs text-slate-400 relative z-10">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-800 dark:text-slate-200">SoapScan AI</span>
+            <span className="font-bold text-white">SoapScan AI</span>
             <span>—</span>
-            <span>3D WebGL Digital Twins + Local Gemma 4 Multimodal Engine</span>
+            <span>{currentUser.householdName}</span>
           </div>
-          <div className="flex items-center gap-4 text-[11px]">
-            <span>Tare-calibrated physics</span>
+          <div className="flex items-center gap-4 text-[11px] font-mono">
+            <span>Authentic User Data Isolated</span>
             <span>•</span>
-            <span>100% on-device vision privacy</span>
+            <span>SSE Real-Time Sync</span>
+            <span>•</span>
+            <span>Local Gemma 4 Multimodal Intelligence</span>
           </div>
         </div>
       </footer>
@@ -306,9 +511,11 @@ export const App: React.FC = () => {
         onClose={() => setIsSettingsModalOpen(false)}
         notificationPrefs={notificationPrefs}
         onUpdatePrefs={setNotificationPrefs}
-        onResetSampleData={handleResetSampleData}
         aiStatus={aiStatus}
       />
+
+      {/* Floating Apple-Style Toast Notifications */}
+      <ToastContainer toasts={toasts} onCloseToast={removeToast} />
     </div>
   );
 };

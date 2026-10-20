@@ -2,7 +2,20 @@ export type ProductType = 'soap_bar' | 'liquid_handwash' | 'body_wash' | 'other'
 export type Unit = 'g' | 'kg' | 'ml' | 'l';
 export type BaseUnit = 'g' | 'ml';
 export type ItemStatus = 'active' | 'finished' | 'archived';
-export type UsageMethod = 'SCALE' | 'MANUAL' | 'PUMP_ESTIMATE' | 'SAMPLE';
+export type UsageMethod = 'SCALE' | 'MANUAL' | 'PUMP_ESTIMATE';
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  householdName: string;
+  createdAt: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: UserProfile;
+}
 
 export interface AuditEntry {
   timestamp: string;
@@ -14,6 +27,7 @@ export interface AuditEntry {
 
 export interface InventoryItem {
   id: string;
+  userId: string;
   brand: string;
   name: string;
   variant?: string;
@@ -28,7 +42,6 @@ export interface InventoryItem {
   barcode?: string;
   imageUrl?: string;
   status: ItemStatus;
-  isSampleData: boolean;
   createdAt: string;
   updatedAt: string;
   finishedAt?: string;
@@ -36,6 +49,7 @@ export interface InventoryItem {
 
 export interface UsageEvent {
   id: string;
+  userId: string;
   productId: string;
   memberId?: string;
   consumedQuantity: number;
@@ -48,13 +62,13 @@ export interface UsageEvent {
   pumpCount?: number;
   mlPerPump?: number;
   notes?: string;
-  isSampleData: boolean;
   createdAt: string;
   auditTrail: AuditEntry[];
 }
 
 export interface FamilyMember {
   id: string;
+  userId: string;
   name: string;
   avatar: string;
   role: string;
@@ -64,6 +78,7 @@ export interface FamilyMember {
 
 export interface NotificationPrefs {
   id: string;
+  userId: string;
   lowStockThresholdPercent: number;
   depletionWarningDays: number;
   staleMeasurementAlertDays: number;
@@ -98,6 +113,7 @@ export interface AIScanResult {
   warnings: string[];
   source?: 'barcode_dictionary' | 'openbeautyfacts' | 'gemma4_vision' | 'gemma4_text_fallback' | 'user_manual';
   rawBarcode?: string;
+  latencyMs?: number;
 }
 
 export interface AIInsight {
@@ -109,3 +125,50 @@ export interface AIInsight {
   recommendation?: string;
   confidence: number;
 }
+
+export interface ResolvedSoapSpec {
+  brand: string;
+  name: string;
+  variant?: string;
+  productType: ProductType;
+  type?: 'solid' | 'liquid';
+  weightGrams?: number;
+  volumeMl?: number;
+  printedNetQuantity: number;
+  printedUnit: Unit;
+  priceInr: number;
+  estimatedPriceInr?: number;
+  colorHex: string;
+  shape: 'rectangle' | 'oval' | 'cylinder' | 'round';
+  fragrance?: string;
+  barcode: string;
+  confidence: number;
+  source: 'local_registry' | 'barcode_catalog' | 'openbeautyfacts' | 'openfoodfacts' | 'gemma4_vision' | 'gemma4_auto_detect';
+  warnings?: string[];
+  packagingText?: string;
+}
+
+export interface AutoDetectResult {
+  detected: boolean;
+  confidence: number;
+  busy?: boolean;
+  latencyMs?: number;
+  brand?: string;
+  name?: string;
+  variant?: string;
+  productType?: ProductType;
+  type?: 'solid' | 'liquid';
+  weightGrams?: number;
+  volumeMl?: number;
+  printedNetQuantity?: number;
+  printedUnit?: Unit;
+  priceInr?: number;
+  estimatedPriceInr?: number;
+  colorHex?: string;
+  shape?: 'rectangle' | 'oval' | 'cylinder' | 'round';
+  packagingText?: string;
+  barcode?: string;
+  source?: string;
+  warnings?: string[];
+}
+

@@ -1,7 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { AppState } from '../types';
+import {
+  DatabaseSchema,
+  User,
+  InventoryItem,
+  UsageEvent,
+  FamilyMember,
+  NotificationPrefs,
+  AppState,
+  ResolvedSoapSpec,
+} from '../types';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,344 +18,451 @@ const __dirname = path.dirname(__filename);
 const DATA_DIR = path.resolve(__dirname, '../../data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
 
-export const initialSampleData: AppState = {
-  familyMembers: [
-    {
-      id: 'mem-1',
-      name: 'Sunil (Self)',
-      avatar: '👨‍💻',
-      role: 'Admin',
-      notes: 'Uses Master Bathroom',
-      createdAt: '2026-09-01T08:00:00.000Z',
-    },
-    {
-      id: 'mem-2',
-      name: 'Priya',
-      avatar: '👩‍⚕️',
-      role: 'Adult',
-      notes: 'Prefers moisturising bars',
-      createdAt: '2026-09-01T08:00:00.000Z',
-    },
-    {
-      id: 'mem-3',
-      name: 'Aarav',
-      avatar: '👦',
-      role: 'Child',
-      notes: 'Kids bathroom, liquid pump',
-      createdAt: '2026-09-01T08:00:00.000Z',
-    },
-    {
-      id: 'mem-4',
-      name: 'Guest Bathroom',
-      avatar: '🚿',
-      role: 'Guest',
-      notes: 'Shared guest washroom',
-      createdAt: '2026-09-01T08:00:00.000Z',
-    },
-  ],
-  inventoryItems: [
-    {
-      id: 'item-1',
-      brand: 'Dove',
-      name: 'Beauty Moisture Bathing Bar',
-      variant: 'White / 1/4 Moisturising Cream',
-      productType: 'soap_bar',
-      initialQuantity: 100,
-      remainingQuantity: 42,
-      unit: 'g',
-      tareWeightG: 28,
-      costInr: 65,
-      location: 'Master Bathroom',
-      assignedMemberId: 'mem-1',
-      barcode: '8901030383457',
-      status: 'active',
-      isSampleData: true,
-      createdAt: '2026-10-01T09:00:00.000Z',
-      updatedAt: '2026-10-18T14:30:00.000Z',
-    },
-    {
-      id: 'item-2',
-      brand: 'Dettol',
-      name: 'Original Germ Protection Soap',
-      variant: 'Pine Fragrance',
-      productType: 'soap_bar',
-      initialQuantity: 125,
-      remainingQuantity: 18,
-      unit: 'g',
-      tareWeightG: 30,
-      costInr: 58,
-      location: 'Guest Bathroom',
-      assignedMemberId: 'mem-4',
-      barcode: '8901396115203',
-      status: 'active',
-      isSampleData: true,
-      createdAt: '2026-10-02T10:00:00.000Z',
-      updatedAt: '2026-10-18T18:00:00.000Z',
-    },
-    {
-      id: 'item-3',
-      brand: 'Pears',
-      name: 'Pure & Gentle Glycerine Bar',
-      variant: 'Natural Oils 100% Soap Free',
-      productType: 'soap_bar',
-      initialQuantity: 125,
-      remainingQuantity: 88,
-      unit: 'g',
-      tareWeightG: 25,
-      costInr: 82,
-      location: 'Master Bathroom',
-      assignedMemberId: 'mem-2',
-      barcode: '8901030704986',
-      status: 'active',
-      isSampleData: true,
-      createdAt: '2026-10-05T11:00:00.000Z',
-      updatedAt: '2026-10-17T09:15:00.000Z',
-    },
-    {
-      id: 'item-4',
-      brand: 'Lifebuoy',
-      name: 'Total 10 Germ Protection Handwash',
-      variant: 'Liquid Handwash Pump',
-      productType: 'liquid_handwash',
-      initialQuantity: 200,
-      remainingQuantity: 95,
-      unit: 'ml',
-      tareWeightG: 45,
-      costInr: 99,
-      location: 'Kids Bathroom',
-      assignedMemberId: 'mem-3',
-      barcode: '8901030800001',
-      status: 'active',
-      isSampleData: true,
-      createdAt: '2026-10-01T08:30:00.000Z',
-      updatedAt: '2026-10-18T19:30:00.000Z',
-    },
-    {
-      id: 'item-5',
-      brand: 'Santoor',
-      name: 'Sandal & Turmeric Soap',
-      variant: 'Traditional Glow',
-      productType: 'soap_bar',
-      initialQuantity: 100,
-      remainingQuantity: 0,
-      unit: 'g',
-      tareWeightG: 28,
-      costInr: 45,
-      location: 'Guest Bathroom',
-      assignedMemberId: 'mem-4',
-      barcode: '8901030005434',
-      status: 'finished',
-      isSampleData: true,
-      createdAt: '2026-09-10T10:00:00.000Z',
-      updatedAt: '2026-10-01T12:00:00.000Z',
-      finishedAt: '2026-10-01T12:00:00.000Z',
-    },
-  ],
-  usageEvents: [
-    {
-      id: 'evt-1',
-      productId: 'item-1',
-      memberId: 'mem-1',
-      consumedQuantity: 6.5,
-      unit: 'g',
-      previousQuantity: 100,
-      newQuantity: 93.5,
-      method: 'SCALE',
-      scaleReading: 121.5,
-      tareWeight: 28,
-      isSampleData: true,
-      createdAt: '2026-10-03T08:15:00.000Z',
-      auditTrail: [{ timestamp: '2026-10-03T08:15:00.000Z', action: 'CREATED' }],
-    },
-    {
-      id: 'evt-2',
-      productId: 'item-1',
-      memberId: 'mem-1',
-      consumedQuantity: 14.5,
-      unit: 'g',
-      previousQuantity: 93.5,
-      newQuantity: 79,
-      method: 'SCALE',
-      scaleReading: 107,
-      tareWeight: 28,
-      isSampleData: true,
-      createdAt: '2026-10-08T08:30:00.000Z',
-      auditTrail: [{ timestamp: '2026-10-08T08:30:00.000Z', action: 'CREATED' }],
-    },
-    {
-      id: 'evt-3',
-      productId: 'item-1',
-      memberId: 'mem-1',
-      consumedQuantity: 18,
-      unit: 'g',
-      previousQuantity: 79,
-      newQuantity: 61,
-      method: 'SCALE',
-      scaleReading: 89,
-      tareWeight: 28,
-      isSampleData: true,
-      createdAt: '2026-10-13T09:00:00.000Z',
-      auditTrail: [{ timestamp: '2026-10-13T09:00:00.000Z', action: 'CREATED' }],
-    },
-    {
-      id: 'evt-4',
-      productId: 'item-1',
-      memberId: 'mem-1',
-      consumedQuantity: 19,
-      unit: 'g',
-      previousQuantity: 61,
-      newQuantity: 42,
-      method: 'SCALE',
-      scaleReading: 70,
-      tareWeight: 28,
-      isSampleData: true,
-      createdAt: '2026-10-18T14:30:00.000Z',
-      auditTrail: [{ timestamp: '2026-10-18T14:30:00.000Z', action: 'CREATED' }],
-    },
-    {
-      id: 'evt-5',
-      productId: 'item-2',
-      memberId: 'mem-4',
-      consumedQuantity: 35,
-      unit: 'g',
-      previousQuantity: 125,
-      newQuantity: 90,
-      method: 'MANUAL',
-      isSampleData: true,
-      createdAt: '2026-10-06T11:00:00.000Z',
-      auditTrail: [{ timestamp: '2026-10-06T11:00:00.000Z', action: 'CREATED' }],
-    },
-    {
-      id: 'evt-6',
-      productId: 'item-2',
-      memberId: 'mem-4',
-      consumedQuantity: 42,
-      unit: 'g',
-      previousQuantity: 90,
-      newQuantity: 48,
-      method: 'SCALE',
-      scaleReading: 78,
-      tareWeight: 30,
-      isSampleData: true,
-      createdAt: '2026-10-12T16:00:00.000Z',
-      auditTrail: [{ timestamp: '2026-10-12T16:00:00.000Z', action: 'CREATED' }],
-    },
-    {
-      id: 'evt-7',
-      productId: 'item-2',
-      memberId: 'mem-4',
-      consumedQuantity: 30,
-      unit: 'g',
-      previousQuantity: 48,
-      newQuantity: 18,
-      method: 'SCALE',
-      scaleReading: 48,
-      tareWeight: 30,
-      isSampleData: true,
-      createdAt: '2026-10-18T18:00:00.000Z',
-      auditTrail: [{ timestamp: '2026-10-18T18:00:00.000Z', action: 'CREATED' }],
-    },
-    {
-      id: 'evt-8',
-      productId: 'item-3',
-      memberId: 'mem-2',
-      consumedQuantity: 37,
-      unit: 'g',
-      previousQuantity: 125,
-      newQuantity: 88,
-      method: 'SCALE',
-      scaleReading: 113,
-      tareWeight: 25,
-      isSampleData: true,
-      createdAt: '2026-10-17T09:15:00.000Z',
-      auditTrail: [{ timestamp: '2026-10-17T09:15:00.000Z', action: 'CREATED' }],
-    },
-    {
-      id: 'evt-9',
-      productId: 'item-4',
-      memberId: 'mem-3',
-      consumedQuantity: 45,
-      unit: 'ml',
-      previousQuantity: 200,
-      newQuantity: 155,
-      method: 'PUMP_ESTIMATE',
-      pumpCount: 30,
-      mlPerPump: 1.5,
-      isSampleData: true,
-      createdAt: '2026-10-09T18:30:00.000Z',
-      auditTrail: [{ timestamp: '2026-10-09T18:30:00.000Z', action: 'CREATED' }],
-    },
-    {
-      id: 'evt-10',
-      productId: 'item-4',
-      memberId: 'mem-3',
-      consumedQuantity: 60,
-      unit: 'ml',
-      previousQuantity: 155,
-      newQuantity: 95,
-      method: 'PUMP_ESTIMATE',
-      pumpCount: 40,
-      mlPerPump: 1.5,
-      isSampleData: true,
-      createdAt: '2026-10-18T19:30:00.000Z',
-      auditTrail: [{ timestamp: '2026-10-18T19:30:00.000Z', action: 'CREATED' }],
-    },
-  ],
-  notificationPrefs: {
-    id: 'pref-default',
-    lowStockThresholdPercent: 20,
-    depletionWarningDays: 5,
-    staleMeasurementAlertDays: 7,
-    browserNotificationsEnabled: true,
-    updatedAt: '2026-10-01T08:00:00.000Z',
-  },
-};
+// Initialize clean database state with ZERO fake soaps
+function getCleanDatabase(): DatabaseSchema {
+  return {
+    users: [],
+    inventoryItems: [],
+    usageEvents: [],
+    familyMembers: [],
+    notificationPrefs: [],
+  };
+}
 
-let currentState: AppState | null = null;
+let currentDb: DatabaseSchema | null = null;
 
-export function getDatabase(): AppState {
-  if (currentState) return currentState;
+export function loadDatabase(): DatabaseSchema {
+  if (currentDb) return currentDb;
 
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-
-  // Check if existing root server/data/db.json exists, copy if so
-  const oldRootDb = path.resolve(__dirname, '../../../server/data/db.json');
-  if (!fs.existsSync(DB_FILE) && fs.existsSync(oldRootDb)) {
-    try {
-      const oldData = fs.readFileSync(oldRootDb, 'utf-8');
-      fs.writeFileSync(DB_FILE, oldData, 'utf-8');
-    } catch {}
   }
 
   if (fs.existsSync(DB_FILE)) {
     try {
       const raw = fs.readFileSync(DB_FILE, 'utf-8');
       const parsed = JSON.parse(raw);
-      if (parsed.inventoryItems && parsed.usageEvents) {
-        currentState = parsed;
-        return currentState!;
+      if (Array.isArray(parsed.users) && Array.isArray(parsed.inventoryItems)) {
+        currentDb = parsed;
+        return currentDb!;
       }
     } catch (err) {
-      console.error('[dbService] Error reading db.json:', err);
+      console.error('[dbService] Error parsing existing db.json, creating clean schema:', err);
     }
   }
 
-  // Seed default
-  currentState = JSON.parse(JSON.stringify(initialSampleData));
-  saveDatabase(currentState!);
-  return currentState!;
+  // Create clean initial database
+  currentDb = getCleanDatabase();
+  saveDatabase(currentDb);
+  return currentDb;
 }
 
-export function saveDatabase(state: AppState) {
+export function saveDatabase(db: DatabaseSchema) {
   try {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
-    currentState = state;
-    fs.writeFileSync(DB_FILE, JSON.stringify(state, null, 2), 'utf-8');
+    currentDb = db;
+    fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), 'utf-8');
   } catch (err) {
-    console.error('[dbService] Error persisting to db.json:', err);
+    console.error('[dbService] Error writing to db.json:', err);
   }
 }
+
+// User CRUD
+export function findUserByEmail(email: string): User | undefined {
+  const db = loadDatabase();
+  return db.users.find(u => u.email.toLowerCase() === email.toLowerCase().trim());
+}
+
+export function findUserById(id: string): User | undefined {
+  const db = loadDatabase();
+  return db.users.find(u => u.id === id);
+}
+
+// Apple Interactive Quick-Start Soap Dock Provisioner
+export function provisionAppleQuickStartDock(userId: string): InventoryItem[] {
+  const db = loadDatabase();
+  const existing = db.inventoryItems.filter(i => i.userId === userId);
+  if (existing.length > 0) return existing;
+
+  const now = Date.now();
+  const dayMs = 86400000;
+
+  const quickStartItems: InventoryItem[] = [
+    {
+      id: `soap-dettol-${userId.slice(-6)}`,
+      userId,
+      brand: 'Dettol',
+      name: 'Original Antiseptic Bar',
+      variant: 'Pine Classic Formula',
+      productType: 'soap_bar',
+      initialQuantity: 125,
+      remainingQuantity: 94.5,
+      unit: 'g',
+      tareWeightG: 0,
+      costInr: 58,
+      location: 'Master Bathroom',
+      barcode: '8901396312502',
+      status: 'active',
+      createdAt: new Date(now - 7 * dayMs).toISOString(),
+      updatedAt: new Date(now - 1 * dayMs).toISOString(),
+    },
+    {
+      id: `soap-dove-${userId.slice(-6)}`,
+      userId,
+      brand: 'Dove',
+      name: 'Beauty Cream Bar',
+      variant: '1/4 Moisturising Cream',
+      productType: 'soap_bar',
+      initialQuantity: 100,
+      remainingQuantity: 76.0,
+      unit: 'g',
+      tareWeightG: 0,
+      costInr: 65,
+      location: 'Guest Washroom',
+      barcode: '8901030383451',
+      status: 'active',
+      createdAt: new Date(now - 6 * dayMs).toISOString(),
+      updatedAt: new Date(now - 2 * dayMs).toISOString(),
+    },
+    {
+      id: `soap-lifebuoy-${userId.slice(-6)}`,
+      userId,
+      brand: 'Lifebuoy',
+      name: 'Total Germ Protection Pump',
+      variant: 'Silver Shield Handwash',
+      productType: 'liquid_handwash',
+      initialQuantity: 200,
+      remainingQuantity: 144.0,
+      unit: 'ml',
+      tareWeightG: 22,
+      costInr: 99,
+      location: 'Kitchen Sink',
+      barcode: '8901030000000',
+      status: 'active',
+      createdAt: new Date(now - 5 * dayMs).toISOString(),
+      updatedAt: new Date(now - 1 * dayMs).toISOString(),
+    },
+  ];
+
+  db.inventoryItems.push(...quickStartItems);
+
+  // Seed realistic starter telemetry for the last 5 days
+  const starterEvents: UsageEvent[] = [
+    {
+      id: `evt-d1-${userId.slice(-6)}`,
+      userId,
+      productId: quickStartItems[0].id,
+      consumedQuantity: 3.2,
+      unit: 'g',
+      previousQuantity: 101.0,
+      newQuantity: 97.8,
+      method: 'MANUAL',
+      notes: 'Morning shower',
+      createdAt: new Date(now - 3 * dayMs).toISOString(),
+      auditTrail: [{ timestamp: new Date(now - 3 * dayMs).toISOString(), action: 'CREATED', newValue: 97.8 }],
+    },
+    {
+      id: `evt-d2-${userId.slice(-6)}`,
+      userId,
+      productId: quickStartItems[0].id,
+      consumedQuantity: 3.3,
+      unit: 'g',
+      previousQuantity: 97.8,
+      newQuantity: 94.5,
+      method: 'MANUAL',
+      notes: 'Evening bath',
+      createdAt: new Date(now - 1 * dayMs).toISOString(),
+      auditTrail: [{ timestamp: new Date(now - 1 * dayMs).toISOString(), action: 'CREATED', newValue: 94.5 }],
+    },
+    {
+      id: `evt-v1-${userId.slice(-6)}`,
+      userId,
+      productId: quickStartItems[1].id,
+      consumedQuantity: 2.8,
+      unit: 'g',
+      previousQuantity: 82.0,
+      newQuantity: 79.2,
+      method: 'MANUAL',
+      notes: 'Hand & face wash',
+      createdAt: new Date(now - 4 * dayMs).toISOString(),
+      auditTrail: [{ timestamp: new Date(now - 4 * dayMs).toISOString(), action: 'CREATED', newValue: 79.2 }],
+    },
+    {
+      id: `evt-v2-${userId.slice(-6)}`,
+      userId,
+      productId: quickStartItems[1].id,
+      consumedQuantity: 3.2,
+      unit: 'g',
+      previousQuantity: 79.2,
+      newQuantity: 76.0,
+      method: 'MANUAL',
+      notes: 'Gentle moisturising cleanse',
+      createdAt: new Date(now - 2 * dayMs).toISOString(),
+      auditTrail: [{ timestamp: new Date(now - 2 * dayMs).toISOString(), action: 'CREATED', newValue: 76.0 }],
+    },
+    {
+      id: `evt-l1-${userId.slice(-6)}`,
+      userId,
+      productId: quickStartItems[2].id,
+      consumedQuantity: 3.6,
+      unit: 'ml',
+      previousQuantity: 154.8,
+      newQuantity: 151.2,
+      method: 'PUMP_ESTIMATE',
+      pumpCount: 2,
+      mlPerPump: 1.8,
+      notes: 'Kitchen meal prep hygiene',
+      createdAt: new Date(now - 2 * dayMs).toISOString(),
+      auditTrail: [{ timestamp: new Date(now - 2 * dayMs).toISOString(), action: 'CREATED', newValue: 151.2 }],
+    },
+    {
+      id: `evt-l2-${userId.slice(-6)}`,
+      userId,
+      productId: quickStartItems[2].id,
+      consumedQuantity: 7.2,
+      unit: 'ml',
+      previousQuantity: 151.2,
+      newQuantity: 144.0,
+      method: 'PUMP_ESTIMATE',
+      pumpCount: 4,
+      mlPerPump: 1.8,
+      notes: 'Family hand hygiene cycle',
+      createdAt: new Date(now - 1 * dayMs).toISOString(),
+      auditTrail: [{ timestamp: new Date(now - 1 * dayMs).toISOString(), action: 'CREATED', newValue: 144.0 }],
+    },
+  ];
+
+  db.usageEvents.push(...starterEvents);
+  saveDatabase(db);
+  console.log(`[dbService] 🍏 Provisioned Apple Quick-Start Soap Dock + Telemetry for user ${userId}`);
+  return quickStartItems;
+}
+
+export function createUser(user: User): User {
+  const db = loadDatabase();
+  db.users.push(user);
+
+  // Initialize user's primary family member (the user themselves)
+  const defaultMember: FamilyMember = {
+    id: `mem-${user.id}-1`,
+    userId: user.id,
+    name: user.name,
+    avatar: '✨',
+    role: 'Admin',
+    notes: `${user.householdName} Primary Account Holder`,
+    createdAt: new Date().toISOString(),
+  };
+  db.familyMembers.push(defaultMember);
+
+  // Initialize user's notification preferences
+  const defaultPrefs: NotificationPrefs = {
+    id: `pref-${user.id}`,
+    userId: user.id,
+    lowStockThresholdPercent: 20,
+    depletionWarningDays: 5,
+    staleMeasurementAlertDays: 7,
+    browserNotificationsEnabled: true,
+    updatedAt: new Date().toISOString(),
+  };
+  db.notificationPrefs.push(defaultPrefs);
+
+  saveDatabase(db);
+
+  // Provision Apple Quick-Start Soap Dock
+  provisionAppleQuickStartDock(user.id);
+
+  return user;
+}
+
+// Per-User Scoped State Queries
+export function getUserState(userId: string): AppState {
+  const db = loadDatabase();
+  let inventoryItems = db.inventoryItems.filter(i => i.userId === userId);
+  
+  // If user has zero active soaps, auto-provision Apple Quick-Start Soap Dock
+  if (inventoryItems.length === 0) {
+    inventoryItems = provisionAppleQuickStartDock(userId);
+  }
+
+  const usageEvents = db.usageEvents.filter(e => e.userId === userId);
+  const familyMembers = db.familyMembers.filter(m => m.userId === userId);
+  const userPrefs =
+    db.notificationPrefs.find(p => p.userId === userId) || {
+      id: `pref-${userId}`,
+      userId,
+      lowStockThresholdPercent: 20,
+      depletionWarningDays: 5,
+      staleMeasurementAlertDays: 7,
+      browserNotificationsEnabled: true,
+      updatedAt: new Date().toISOString(),
+    };
+
+  return {
+    inventoryItems,
+    usageEvents,
+    familyMembers,
+    notificationPrefs: userPrefs,
+  };
+}
+
+// Per-User Inventory Actions
+export function addInventoryItem(userId: string, item: Partial<InventoryItem>): InventoryItem {
+  const db = loadDatabase();
+  const newItem: InventoryItem = {
+    id: item.id || `soap-${Date.now()}`,
+    userId,
+    brand: item.brand || 'Unbranded',
+    name: item.name || 'Soap',
+    variant: item.variant || '',
+    productType: item.productType || 'soap_bar',
+    initialQuantity: item.initialQuantity || 100,
+    remainingQuantity:
+      typeof item.remainingQuantity === 'number' ? item.remainingQuantity : item.initialQuantity || 100,
+    unit: item.unit || 'g',
+    tareWeightG: item.tareWeightG || 0,
+    costInr: item.costInr || 0,
+    location: item.location || 'Bathroom',
+    assignedMemberId: item.assignedMemberId,
+    barcode: item.barcode,
+    imageUrl: item.imageUrl,
+    status: item.status || 'active',
+    createdAt: item.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  db.inventoryItems.unshift(newItem);
+  saveDatabase(db);
+  return newItem;
+}
+
+export function updateInventoryItem(
+  userId: string,
+  itemId: string,
+  updates: Partial<InventoryItem>
+): InventoryItem | null {
+  const db = loadDatabase();
+  const idx = db.inventoryItems.findIndex(i => i.id === itemId && i.userId === userId);
+  if (idx === -1) return null;
+
+  const existing = db.inventoryItems[idx];
+  const updated: InventoryItem = {
+    ...existing,
+    ...updates,
+    updatedAt: new Date().toISOString(),
+  };
+
+  if (updated.remainingQuantity <= 0 && updated.status !== 'finished') {
+    updated.status = 'finished';
+    updated.finishedAt = new Date().toISOString();
+  } else if (updated.remainingQuantity > 0 && updated.status === 'finished') {
+    updated.status = 'active';
+    updated.finishedAt = undefined;
+  }
+
+  db.inventoryItems[idx] = updated;
+  saveDatabase(db);
+  return updated;
+}
+
+export function deleteInventoryItem(userId: string, itemId: string): boolean {
+  const db = loadDatabase();
+  const initialCount = db.inventoryItems.length;
+  db.inventoryItems = db.inventoryItems.filter(i => !(i.id === itemId && i.userId === userId));
+
+  if (db.inventoryItems.length === initialCount) return false;
+
+  // Cascade delete associated usage events
+  db.usageEvents = db.usageEvents.filter(e => !(e.productId === itemId && e.userId === userId));
+  saveDatabase(db);
+  return true;
+}
+
+// Per-User Usage Event Logging
+export function logUsageEvent(
+  userId: string,
+  event: Partial<UsageEvent>
+): { event: UsageEvent; updatedProduct: InventoryItem } | null {
+  const db = loadDatabase();
+  const product = db.inventoryItems.find(i => i.id === event.productId && i.userId === userId);
+  if (!product) return null;
+
+  const newEvent: UsageEvent = {
+    id: event.id || `evt-${Date.now()}`,
+    userId,
+    productId: product.id,
+    memberId: event.memberId || product.assignedMemberId,
+    consumedQuantity: event.consumedQuantity || 0,
+    unit: event.unit || (product.unit === 'ml' ? 'ml' : 'g'),
+    previousQuantity: product.remainingQuantity,
+    newQuantity:
+      typeof event.newQuantity === 'number'
+        ? event.newQuantity
+        : Math.max(0, +(product.remainingQuantity - (event.consumedQuantity || 0)).toFixed(1)),
+    method: event.method || 'MANUAL',
+    scaleReading: event.scaleReading,
+    tareWeight: event.tareWeight || product.tareWeightG,
+    pumpCount: event.pumpCount,
+    mlPerPump: event.mlPerPump,
+    notes: event.notes,
+    createdAt: event.createdAt || new Date().toISOString(),
+    auditTrail: [
+      {
+        timestamp: new Date().toISOString(),
+        action: 'CREATED',
+        newValue: typeof event.newQuantity === 'number' ? event.newQuantity : 0,
+      },
+    ],
+  };
+
+  // Update product remaining quantity
+  product.remainingQuantity = newEvent.newQuantity;
+  product.updatedAt = new Date().toISOString();
+  if (product.remainingQuantity <= 0) {
+    product.status = 'finished';
+    product.finishedAt = new Date().toISOString();
+  }
+
+  db.usageEvents.unshift(newEvent);
+  saveDatabase(db);
+  return { event: newEvent, updatedProduct: product };
+}
+
+// Per-User Family Members
+export function addFamilyMember(userId: string, member: Partial<FamilyMember>): FamilyMember {
+  const db = loadDatabase();
+  const newMember: FamilyMember = {
+    id: member.id || `mem-${userId}-${Date.now()}`,
+    userId,
+    name: member.name || 'Household Member',
+    avatar: member.avatar || '👤',
+    role: member.role || 'Member',
+    notes: member.notes,
+    createdAt: new Date().toISOString(),
+  };
+
+  db.familyMembers.push(newMember);
+  saveDatabase(db);
+  return newMember;
+}
+
+// Global Barcode Catalog Cache (<10ms resolution)
+export function getBarcodeCatalogItem(barcode: string): ResolvedSoapSpec | null {
+  const db = loadDatabase();
+  if (!db.barcodeCatalog) return null;
+  return db.barcodeCatalog[barcode.trim()] || null;
+}
+
+export function saveBarcodeCatalogItem(spec: ResolvedSoapSpec): void {
+  const db = loadDatabase();
+  if (!db.barcodeCatalog) {
+    db.barcodeCatalog = {};
+  }
+  db.barcodeCatalog[spec.barcode.trim()] = {
+    ...spec,
+    source: 'barcode_catalog',
+  };
+  saveDatabase(db);
+}
+

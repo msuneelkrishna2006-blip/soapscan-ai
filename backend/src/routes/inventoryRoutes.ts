@@ -1,8 +1,17 @@
-import { Router, Request, Response } from 'express';
+import { Router, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { getDatabase, saveDatabase, initialSampleData } from '../services/dbService';
+import {
+  getUserState,
+  addInventoryItem,
+  updateInventoryItem,
+  deleteInventoryItem,
+  logUsageEvent,
+  addFamilyMember,
+} from '../services/dbService';
+import { requireAuth, AuthenticatedRequest } from '../services/authService';
+import { broadcastToUser } from './realtimeRoutes';
 import { InventoryItem, UsageEvent, FamilyMember } from '../types';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -10,155 +19,178 @@ const __dirname = path.dirname(__filename);
 
 export const inventoryRouter = Router();
 
-// GET /api/state
-inventoryRouter.get('/state', (_req: Request, res: Response) => {
-  const db = getDatabase();
-  return res.json(db);
+// Apply authentication middleware to all inventory & usage endpoints
+inventoryRouter.use(requireAuth);
+
+// GET /api/state - Return current user's isolated state
+inventoryRouter.get('/state', (req: AuthenticatedRequest, res: Response) => {
+  const state = getUserState(req.userId!);
+  return res.json(state);
 });
 
-// POST /api/inventory
-inventoryRouter.post('/inventory', (req: Request, res: Response) => {
-  const db = getDatabase();
-  const newItem = req.body as InventoryItem;
+// POST /api/inventory - Add a real soap to the authenticated user's inventory
+inventoryRouter.post('/inventory', (req: AuthenticatedRequest, res: Response) => {
+  const newItem = addInventoryItem(req.userId!, req.body as Partial<InventoryItem>);
 
-  if (!newItem.id) {
-    newItem.id = `item-${Date.now()}`;
-  }
-  newItem.createdAt = newItem.createdAt || new Date().toISOString();
-  newItem.updatedAt = new Date().toISOString();
-  newItem.status = newItem.status || 'active';
+  // Broadcast real-time update to user's clients
+  broadcastToUser(req.userId!, 'item_added', {
+    item: newItem,
+    timestamp: new Date().toISOString(),
+  });
 
-  db.inventoryItems.unshift(newItem);
-  saveDatabase(db);
   return res.status(201).json(newItem);
 });
 
-// PATCH /api/inventory/:id
-inventoryRouter.patch('/inventory/:id', (req: Request, res: Response) => {
-  const { id } = req.params;
-  const db = getDatabase();
-  const updates = req.body as Partial<InventoryItem>;
-  const idx = db.inventoryItems.findIndex(i => i.id === id);
+// PATCH /api/inventory/:id - Update real soap
+inventoryRouter.patch('/inventory/:id', (req: AuthenticatedRequest, res: Response) => {
+  const id = String(req.params.id);
+  const updated = updateInventoryItem(req.userId!, id, req.body as Partial<InventoryItem>);
 
-  if (idx === -1) {
-    return res.status(404).json({ error: 'Item not found' });
+  if (!updated) {
+    return res.status(404).json({ error: 'Soap item not found in your inventory.' });
   }
 
-  const existing = db.inventoryItems[idx];
-  const updated: InventoryItem = {
-    ...existing,
-    ...updates,
-    updatedAt: new Date().toISOString(),
-  };
+  broadcastToUser(req.userId!, 'item_updated', {
+    item: updated,
+    timestamp: new Date().toISOString(),
+  });
 
-  if (updated.remainingQuantity <= 0 && updated.status !== 'finished') {
-    updated.status = 'finished';
-    updated.finishedAt = new Date().toISOString();
-  } else if (updated.remainingQuantity > 0 && updated.status === 'finished') {
-    updated.status = 'active';
-    updated.finishedAt = undefined;
-  }
-
-  db.inventoryItems[idx] = updated;
-  saveDatabase(db);
   return res.json(updated);
 });
 
-// DELETE /api/inventory/:id
-inventoryRouter.delete('/inventory/:id', (req: Request, res: Response) => {
-  const { id } = req.params;
-  const db = getDatabase();
-  const initialLength = db.inventoryItems.length;
-  db.inventoryItems = db.inventoryItems.filter(i => i.id !== id);
+// DELETE /api/inventory/:id - Delete real soap
+inventoryRouter.delete('/inventory/:id', (req: AuthenticatedRequest, res: Response) => {
+  const id = String(req.params.id);
+  const success = deleteInventoryItem(req.userId!, id);
 
-  if (db.inventoryItems.length === initialLength) {
-    return res.status(404).json({ error: 'Item not found' });
+  if (!success) {
+    return res.status(404).json({ error: 'Soap item not found in your inventory.' });
   }
 
-  db.usageEvents = db.usageEvents.filter(e => e.productId !== id);
-  saveDatabase(db);
+  broadcastToUser(req.userId!, 'item_deleted', {
+    deletedId: id,
+    timestamp: new Date().toISOString(),
+  });
+
   return res.json({ success: true, deletedId: id });
 });
 
-// POST /api/usage
-inventoryRouter.post('/usage', (req: Request, res: Response) => {
-  const db = getDatabase();
-  const event = req.body as UsageEvent;
+// POST /api/usage - Log real weight measurement or pump dispense
+inventoryRouter.post('/usage', (req: AuthenticatedRequest, res: Response) => {
+  const result = logUsageEvent(req.userId!, req.body as Partial<UsageEvent>);
 
-  if (!event.id) {
-    event.id = `evt-${Date.now()}`;
+  if (!result) {
+    return res.status(404).json({ error: 'Associated soap product not found in your inventory.' });
   }
-  event.createdAt = event.createdAt || new Date().toISOString();
 
-  const product = db.inventoryItems.find(i => i.id === event.productId);
+  broadcastToUser(req.userId!, 'usage_logged', {
+    event: result.event,
+    updatedProduct: result.updatedProduct,
+    timestamp: new Date().toISOString(),
+  });
+  broadcastToUser(req.userId!, 'STATE_UPDATED', {
+    action: 'usage_logged',
+    item: result.updatedProduct,
+    event: result.event,
+    timestamp: new Date().toISOString(),
+  });
+
+  return res.status(201).json(result);
+});
+
+// POST /api/usage/quick - Instant 1-click micro-dosing (pump, bar_wash, custom_delta, restock)
+inventoryRouter.post('/usage/quick', (req: AuthenticatedRequest, res: Response) => {
+  const { itemId, action, amount, newQuantity } = req.body as {
+    itemId: string;
+    action: 'pump' | 'bar_wash' | 'custom_delta' | 'restock';
+    amount?: number;
+    newQuantity?: number;
+  };
+
+  const state = getUserState(req.userId!);
+  const product = state.inventoryItems.find(i => i.id === itemId);
   if (!product) {
-    return res.status(404).json({ error: 'Associated inventory product not found' });
+    return res.status(404).json({ error: 'Soap item not found in your inventory.' });
   }
 
-  // 15-second duplicate guard
-  const recentProductEvents = db.usageEvents.filter(e => e.productId === event.productId);
-  if (recentProductEvents.length > 0) {
-    const lastEvent = recentProductEvents[0];
-    const diffMs = Math.abs(new Date(event.createdAt).getTime() - new Date(lastEvent.createdAt).getTime());
-    if (diffMs < 15000) {
-      return res.status(409).json({
-        error: 'Duplicate event guard: A measurement was already recorded for this product in the last 15 seconds.',
-      });
+  let consumed = 0;
+  let targetQuantity = product.remainingQuantity;
+
+  if (action === 'pump') {
+    consumed = typeof amount === 'number' && amount > 0 ? amount : 1.5;
+    targetQuantity = Math.max(0, +(product.remainingQuantity - consumed).toFixed(1));
+  } else if (action === 'bar_wash') {
+    consumed = typeof amount === 'number' && amount > 0 ? amount : 4.0;
+    targetQuantity = Math.max(0, +(product.remainingQuantity - consumed).toFixed(1));
+  } else if (action === 'restock') {
+    targetQuantity = product.initialQuantity;
+    consumed = 0;
+  } else if (action === 'custom_delta') {
+    if (typeof newQuantity === 'number') {
+      targetQuantity = Math.max(0, Math.min(product.initialQuantity, +newQuantity.toFixed(1)));
+      consumed = +(product.remainingQuantity - targetQuantity).toFixed(1);
+    } else if (typeof amount === 'number') {
+      consumed = amount;
+      targetQuantity = Math.max(0, +(product.remainingQuantity - amount).toFixed(1));
     }
   }
 
-  product.remainingQuantity = event.newQuantity;
-  product.updatedAt = new Date().toISOString();
+  if (action === 'restock') {
+    const updated = updateInventoryItem(req.userId!, itemId, {
+      remainingQuantity: targetQuantity,
+      status: 'active',
+      finishedAt: undefined,
+    });
+    if (!updated) {
+      return res.status(500).json({ error: 'Failed to restock item' });
+    }
+    broadcastToUser(req.userId!, 'STATE_UPDATED', {
+      type: 'STATE_UPDATED',
+      action: 'restock',
+      item: updated,
+      timestamp: new Date().toISOString(),
+    });
+    return res.json({ updatedProduct: updated });
+  } else {
+    const result = logUsageEvent(req.userId!, {
+      productId: itemId,
+      consumedQuantity: Math.abs(consumed),
+      newQuantity: targetQuantity,
+      unit: product.unit === 'ml' ? 'ml' : 'g',
+      method: action === 'pump' ? 'PUMP_ESTIMATE' : 'SCALE',
+      notes: `Quick ${action.replace('_', ' ')}: ${Math.abs(consumed)}${product.unit}`,
+    });
 
-  if (product.remainingQuantity <= 0) {
-    product.status = 'finished';
-    product.finishedAt = new Date().toISOString();
+    if (!result) {
+      return res.status(500).json({ error: 'Failed to record usage' });
+    }
+
+    broadcastToUser(req.userId!, 'USAGE_LOGGED', {
+      type: 'USAGE_LOGGED',
+      event: result.event,
+      updatedProduct: result.updatedProduct,
+      timestamp: new Date().toISOString(),
+    });
+    broadcastToUser(req.userId!, 'STATE_UPDATED', {
+      type: 'STATE_UPDATED',
+      action,
+      item: result.updatedProduct,
+      event: result.event,
+      timestamp: new Date().toISOString(),
+    });
+
+    return res.json(result);
   }
-
-  event.auditTrail = event.auditTrail || [];
-  event.auditTrail.push({
-    timestamp: new Date().toISOString(),
-    action: 'CREATED',
-    newValue: event.newQuantity,
-  });
-
-  db.usageEvents.unshift(event);
-  saveDatabase(db);
-
-  return res.status(201).json({ event, updatedProduct: product });
 });
 
-// POST /api/members
-inventoryRouter.post('/members', (req: Request, res: Response) => {
-  const db = getDatabase();
-  const member = req.body as FamilyMember;
-  if (!member.id) {
-    member.id = `mem-${Date.now()}`;
-  }
-  member.createdAt = new Date().toISOString();
-  db.familyMembers.push(member);
-  saveDatabase(db);
+// POST /api/members - Add real family member
+inventoryRouter.post('/members', (req: AuthenticatedRequest, res: Response) => {
+  const member = addFamilyMember(req.userId!, req.body as Partial<FamilyMember>);
   return res.status(201).json(member);
 });
 
-// POST /api/reset-sample-data
-inventoryRouter.post('/reset-sample-data', (req: Request, res: Response) => {
-  const { action } = req.body as { action: 'restore' | 'purge' };
-  let db = getDatabase();
-
-  if (action === 'restore') {
-    db = JSON.parse(JSON.stringify(initialSampleData));
-  } else {
-    db.inventoryItems = db.inventoryItems.filter(i => !i.isSampleData);
-    db.usageEvents = db.usageEvents.filter(e => !e.isSampleData);
-  }
-
-  saveDatabase(db);
-  return res.json({ success: true, state: db });
-});
-
-// GET /api/schema
-inventoryRouter.get('/schema', (_req: Request, res: Response) => {
+// GET /api/schema - Database schema reference
+inventoryRouter.get('/schema', (_req: AuthenticatedRequest, res: Response) => {
   try {
     const schemaPath = path.resolve(__dirname, '../../supabase/migrations/001_initial_schema.sql');
     if (fs.existsSync(schemaPath)) {

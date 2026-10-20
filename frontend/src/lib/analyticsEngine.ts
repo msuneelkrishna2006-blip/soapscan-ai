@@ -65,12 +65,9 @@ export interface MonthlyComparisonPoint {
 export function filterEventsByMonth(
   events: UsageEvent[],
   targetMonth: string,
-  includeSample = true
+  _includeSample?: boolean
 ): UsageEvent[] {
-  return events.filter(e => {
-    if (!includeSample && e.isSampleData) return false;
-    return e.createdAt.startsWith(targetMonth);
-  });
+  return events.filter(e => e.createdAt.startsWith(targetMonth));
 }
 
 export function calculateItemBurnRate(
@@ -99,17 +96,17 @@ export function calculateDashboardKPIs(
   inventory: InventoryItem[],
   usageEvents: UsageEvent[],
   targetMonth: string,
-  includeSample = true
+  _includeSample?: boolean
 ): DashboardKPIs {
-  const activeItems = inventory.filter(i => (includeSample || !i.isSampleData) && i.status === 'active');
-  const finishedItems = inventory.filter(i => (includeSample || !i.isSampleData) && i.status === 'finished');
+  const activeItems = inventory.filter(i => i.status === 'active');
+  const finishedItems = inventory.filter(i => i.status === 'finished');
 
-  const currentMonthEvents = filterEventsByMonth(usageEvents, targetMonth, includeSample);
+  const currentMonthEvents = filterEventsByMonth(usageEvents, targetMonth);
 
   const [year, month] = targetMonth.split('-').map(Number);
   const prevDate = new Date(year, month - 2, 1);
   const prevMonthStr = `${prevDate.getFullYear()}-${String(prevDate.getMonth() + 1).padStart(2, '0')}`;
-  const prevMonthEvents = filterEventsByMonth(usageEvents, prevMonthStr, includeSample);
+  const prevMonthEvents = filterEventsByMonth(usageEvents, prevMonthStr);
 
   let solidSoapUsedMonthG = 0;
   let liquidSoapUsedMonthMl = 0;
@@ -201,7 +198,7 @@ export function generateSmartAlerts(
   includeSample = true
 ): InventoryAlert[] {
   const alerts: InventoryAlert[] = [];
-  const activeItems = inventory.filter(i => (includeSample || !i.isSampleData) && i.status === 'active');
+  const activeItems = inventory.filter(i => i.status === 'active');
   const now = new Date().getTime();
 
   activeItems.forEach(item => {
@@ -259,9 +256,9 @@ export function getProductUsageBreakdown(
   inventory: InventoryItem[],
   usageEvents: UsageEvent[],
   targetMonth: string,
-  includeSample = true
+  _includeSample?: boolean
 ): ProductUsageBreakdown[] {
-  const monthEvents = filterEventsByMonth(usageEvents, targetMonth, includeSample);
+  const monthEvents = filterEventsByMonth(usageEvents, targetMonth);
   const map = new Map<string, { consumed: number; unit: string }>();
 
   monthEvents.forEach(e => {
@@ -272,7 +269,6 @@ export function getProductUsageBreakdown(
 
   const list: ProductUsageBreakdown[] = [];
   inventory.forEach(item => {
-    if (!includeSample && item.isSampleData) return;
     const stats = map.get(item.id);
     if (stats && stats.consumed > 0) {
       const fillPercentage = item.initialQuantity > 0 ? Math.round((item.remainingQuantity / item.initialQuantity) * 100) : 0;

@@ -110,7 +110,6 @@ export const LogUsageModal: React.FC<LogUsageModalProps> = ({
         pumpCount: method === 'PUMP_ESTIMATE' ? pumpCount : undefined,
         mlPerPump: method === 'PUMP_ESTIMATE' ? mlPerPump : undefined,
         notes: notes.trim() || undefined,
-        isSampleData: false,
         createdAt: new Date().toISOString(),
       };
 

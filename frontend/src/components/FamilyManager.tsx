@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Users, Plus, Shield, UserPlus, Heart, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { FamilyMember, InventoryItem, UsageEvent } from '../types/soap';
 
 interface FamilyManagerProps {
@@ -171,16 +172,24 @@ export const FamilyManager: React.FC<FamilyManagerProps> = ({
             .reduce((a, b) => a + b.consumedQuantity, 0);
 
           return (
-            <div
+            <motion.div
               key={member.id}
-              className="p-5 rounded-2xl bg-white dark:bg-obsidian-800 border border-slate-200 dark:border-teal-900/30 shadow-sm flex flex-col justify-between"
+              whileHover={{ y: -4 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 25 }}
+              className="p-5 rounded-2xl bg-white dark:bg-obsidian-800 border border-slate-200 dark:border-teal-900/30 shadow-sm hover:shadow-xl hover:border-radiant-teal/50 flex flex-col justify-between transition-colors"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="text-3xl p-2 rounded-xl bg-slate-100 dark:bg-obsidian-900 w-fit">
                     {member.avatar}
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-radiant-teal/15 text-radiant-teal">
+                  <span
+                    className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
+                      member.role.toLowerCase() === 'admin'
+                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 animate-pulse shadow-md shadow-emerald-500/20 font-mono'
+                        : 'bg-radiant-teal/15 text-radiant-teal border border-radiant-teal/30'
+                    }`}
+                  >
                     {member.role}
                   </span>
                 </div>
@@ -226,7 +235,7 @@ export const FamilyManager: React.FC<FamilyManagerProps> = ({
                   </div>
                 </div>
               )}
-            </div>
+            </motion.div>
           );
         })}
       </div>

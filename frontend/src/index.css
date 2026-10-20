@@ -4,14 +4,16 @@
 
 :root {
   color-scheme: dark light;
+  --apple-font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Inter, system-ui, sans-serif;
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: var(--apple-font-stack);
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.015em;
 }
 
 /* Custom scrollbars */
@@ -53,8 +55,29 @@ body {
   box-shadow: 0 0 25px -5px rgba(20, 184, 166, 0.35);
 }
 
+.glow-cyan {
+  box-shadow: 0 0 30px -4px rgba(0, 245, 212, 0.45);
+}
+
+.glow-emerald {
+  box-shadow: 0 0 25px -4px rgba(16, 185, 129, 0.45);
+}
+
 .glow-gold {
   box-shadow: 0 0 25px -5px rgba(212, 175, 55, 0.3);
+}
+
+/* Frosted Dark Glass */
+.frosted-glass-card {
+  background: rgba(8, 28, 38, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 245, 212, 0.22);
+}
+
+.frosted-glass-card:hover {
+  border-color: rgba(0, 245, 212, 0.5);
+  box-shadow: 0 10px 30px -10px rgba(0, 245, 212, 0.2);
 }
 
 /* 3D Perspective Transformations */
@@ -64,6 +87,10 @@ body {
 
 .perspective-1000 {
   perspective: 1000px;
+}
+
+.perspective-1200 {
+  perspective: 1200px;
 }
 
 @keyframes floatGentle {
@@ -82,7 +109,7 @@ body {
 @keyframes scanLine {
   0% {
     top: 0%;
-    opacity: 0.8;
+    opacity: 0.9;
   }
   50% {
     opacity: 1;
@@ -96,3 +123,148 @@ body {
 .animate-scan-line {
   animation: scanLine 2.2s linear infinite;
 }
+
+@keyframes pulseRipples {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+.animate-pulse-ripples {
+  animation: pulseRipples 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+@keyframes laserSweep {
+  0% {
+    top: 4%;
+    opacity: 0.9;
+  }
+  50% {
+    top: 92%;
+    opacity: 1;
+  }
+  100% {
+    top: 4%;
+    opacity: 0.9;
+  }
+}
+
+.animate-laser-sweep {
+  animation: laserSweep 2.8s ease-in-out infinite;
+}
+
+@keyframes lightWavePulse {
+  0%, 100% {
+    stroke-dashoffset: 0;
+    opacity: 0.6;
+  }
+  50% {
+    stroke-dashoffset: 40;
+    opacity: 1;
+  }
+}
+
+.animate-light-wave {
+  animation: lightWavePulse 3s linear infinite;
+}
+
+/* Apple visionOS & macOS Sequoia Spatial Frosted Glass */
+.apple-glass {
+  background: rgba(14, 26, 36, 0.72);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.apple-glass-light {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Tactile Apple Health Bento Card */
+.apple-bento-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+.apple-bento-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.35);
+}
+
+/* Animated Conic-Gradient Border Beam */
+@keyframes conicSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-conic-spin {
+  animation: conicSpin 4s linear infinite;
+}
+
+/* Sweeping Light-Sheen Effect across Buttons */
+@keyframes lightSheen {
+  0% {
+    transform: translateX(-100%) skewX(-25deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-25deg);
+  }
+}
+
+.group:hover .animate-light-sheen {
+  animation: lightSheen 1.2s ease-in-out infinite;
+}
+
+/* Sonar Radar Ripple Animation */
+@keyframes sonarRadar {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.9);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+.animate-sonar-radar {
+  animation: sonarRadar 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+/* Title Shimmer Effect */
+@keyframes shimmerText {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.animate-shimmer-text {
+  background-size: 200% auto;
+  animation: shimmerText 6s linear infinite;
+}
+
+

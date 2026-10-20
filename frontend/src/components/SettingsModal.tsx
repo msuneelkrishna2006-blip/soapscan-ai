@@ -20,7 +20,6 @@ interface SettingsModalProps {
   onClose: () => void;
   notificationPrefs: NotificationPrefs;
   onUpdatePrefs: (prefs: NotificationPrefs) => void;
-  onResetSampleData: (action: 'restore' | 'purge') => Promise<void>;
   aiStatus: AIStatus | null;
 }
 
@@ -29,7 +28,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose,
   notificationPrefs,
   onUpdatePrefs,
-  onResetSampleData,
   aiStatus,
 }) => {
   const [schemaSql, setSchemaSql] = useState<string>('');
@@ -277,53 +275,27 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {activeTab === 'data' && (
             <div className="space-y-4">
               <div className="p-4 rounded-xl bg-slate-100 dark:bg-obsidian-900 border border-slate-200 dark:border-obsidian-700 space-y-3">
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">
-                  Sample & Demo Data Controls
-                </h4>
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                    100% Authentic User Data & Multi-Tenant Isolation
+                  </h4>
+                </div>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  The application is pre-seeded with verified sample records (Dove, Dettol, Pears,
-                  Lifebuoy) to showcase the AI analytics charts and burn rate predictions. You can
-                  purge them when ready to start your household from scratch, or restore them anytime.
+                  SoapScan AI operates under a strict <strong className="text-emerald-400">Zero Fake Data</strong> guarantee.
+                  All inventory records, telemetry scale weights, pump logs, and Gemma 4 AI insights are strictly isolated
+                  by your unique user identifier (<code className="text-radiant-teal">userId</code>).
                 </p>
 
-                <div className="flex flex-wrap gap-3 pt-2">
-                  <button
-                    onClick={async () => {
-                      if (
-                        confirm(
-                          'Purge sample data? Only your real scans and logged usage events will remain.'
-                        )
-                      ) {
-                        setIsResetting(true);
-                        await onResetSampleData('purge');
-                        setIsResetting(false);
-                      }
-                    }}
-                    disabled={isResetting}
-                    className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-bold rounded-xl transition flex items-center gap-2 disabled:opacity-50"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    <span>Purge Sample Data</span>
-                  </button>
-
-                  <button
-                    onClick={async () => {
-                      if (
-                        confirm(
-                          'Restore demo suite? This will replenish the full suite of sample soaps and historical logs.'
-                        )
-                      ) {
-                        setIsResetting(true);
-                        await onResetSampleData('restore');
-                        setIsResetting(false);
-                      }
-                    }}
-                    disabled={isResetting}
-                    className="px-4 py-2 bg-radiant-teal/10 hover:bg-radiant-teal/20 text-radiant-teal border border-radiant-teal/30 text-xs font-bold rounded-xl transition flex items-center gap-2 disabled:opacity-50"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                    <span>Restore Sample Data</span>
-                  </button>
+                <div className="grid grid-cols-2 gap-3 pt-2 text-xs">
+                  <div className="p-3 rounded-lg bg-obsidian-800/60 border border-obsidian-700">
+                    <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Storage Engine</span>
+                    <span className="font-semibold text-white">SQLite / Local JSON DB</span>
+                  </div>
+                  <div className="p-3 rounded-lg bg-obsidian-800/60 border border-obsidian-700">
+                    <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Security Protocol</span>
+                    <span className="font-semibold text-emerald-400">HMAC-SHA256 JWT & Scrypt</span>
+                  </div>
                 </div>
               </div>
             </div>

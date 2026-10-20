@@ -8,6 +8,9 @@
     "dev:backend": "npm --prefix backend run dev",
     "dev:frontend": "npm --prefix frontend run dev",
     "build": "npm --prefix frontend run build && npm --prefix backend run build",
+    "build:backend": "npm --prefix backend install && npm --prefix backend run build",
+    "start": "node backend/dist/index.js",
+    "start:backend": "node backend/dist/index.js",
     "test": "npm --prefix frontend run test"
   },
   "devDependencies": {

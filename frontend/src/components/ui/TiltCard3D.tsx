@@ -5,13 +5,15 @@ interface TiltCard3DProps {
   className?: string;
   maxTilt?: number;
   glareOpacity?: number;
+  spotlightColor?: string;
 }
 
 export const TiltCard3D: React.FC<TiltCard3DProps> = ({
   children,
   className = '',
-  maxTilt = 12,
-  glareOpacity = 0.25,
+  maxTilt = 6,
+  glareOpacity = 0.22,
+  spotlightColor = '16, 185, 129',
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -61,12 +63,12 @@ export const TiltCard3D: React.FC<TiltCard3DProps> = ({
     >
       {children}
 
-      {/* Dynamic Specular Glare Layer */}
+      {/* Dynamic Specular Spotlight Glare Layer */}
       {isHovered && (
         <div
-          className="pointer-events-none absolute inset-0 rounded-2xl transition-opacity duration-300 z-10"
+          className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300 z-10"
           style={{
-            background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(20, 184, 166, ${glareOpacity}), rgba(212, 175, 55, ${glareOpacity * 0.5}) 30%, transparent 70%)`,
+            background: `radial-gradient(400px circle at ${glarePos.x}% ${glarePos.y}%, rgba(${spotlightColor}, ${glareOpacity}), transparent 65%)`,
             opacity: isHovered ? 1 : 0,
           }}
         />

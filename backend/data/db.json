@@ -1,342 +1,595 @@
 {
-  "familyMembers": [
+  "users": [
     {
-      "id": "mem-1",
-      "name": "Sunil (Self)",
-      "avatar": "👨‍💻",
-      "role": "Admin",
-      "notes": "Uses Master Bathroom",
-      "createdAt": "2026-09-01T08:00:00.000Z"
+      "id": "usr-1792392896626-rxxys",
+      "name": "Sunil Sharma",
+      "email": "sunil@cosmic.ai",
+      "passwordHash": "cbec5a1198a37ff4fb98481d203b7bf7:c9d77a8401dcec480a09a775b7b900a0cf98cadf3b760ee6614be29927850485b7215d687e938c3a789533e0805d7114f2dc89cf179259333cfc2003321b87fd",
+      "householdName": "The Sharma Residence",
+      "createdAt": "2026-10-19T06:54:56.751Z"
     },
     {
-      "id": "mem-2",
-      "name": "Priya",
-      "avatar": "👩‍⚕️",
-      "role": "Adult",
-      "notes": "Prefers moisturising bars",
-      "createdAt": "2026-09-01T08:00:00.000Z"
+      "id": "usr-1792393151320-gkoi2",
+      "name": "sun",
+      "email": "msuneelkrishna2006@gmail.com",
+      "passwordHash": "47ab49e98f4dc2ceddc969ed51ed0201:35af47f03287aa1f4da9adbb50809ec2e0f528594d3c031f69876a5a8d0d4dbcb023268dbd2ca16c54e6f9aa572d8a31558626b3652581db538e6b785394d4e4",
+      "householdName": "sun homes",
+      "createdAt": "2026-10-19T06:59:11.464Z"
     },
     {
-      "id": "mem-3",
-      "name": "Aarav",
-      "avatar": "👦",
-      "role": "Child",
-      "notes": "Kids bathroom, liquid pump",
-      "createdAt": "2026-09-01T08:00:00.000Z"
-    },
-    {
-      "id": "mem-4",
-      "name": "Guest Bathroom",
-      "avatar": "🚿",
-      "role": "Guest",
-      "notes": "Shared guest washroom",
-      "createdAt": "2026-09-01T08:00:00.000Z"
+      "id": "usr-suneel-mveznrw1",
+      "name": "Suneel Hegde",
+      "email": "suneel@soapscan.io",
+      "passwordHash": "57bfb525e55ea7009bd649940156223b:9db06ca5ee915adc383f0201adb623e3fc890a0798f2fe028a5270793cc6983a6eb996196b84b619f6c6b1f010c672559956c924d56be28c25b67f494d24b405",
+      "householdName": "Suneel's Smart Household",
+      "createdAt": "2026-10-19T08:24:44.845Z"
     }
   ],
   "inventoryItems": [
     {
-      "id": "item-1",
+      "id": "soap-1792398300269",
+      "userId": "usr-suneel-mveznrw1",
+      "brand": "Mysore Sandal",
+      "name": "Pure Sandalwood Bathing Bar",
+      "variant": "",
+      "productType": "soap_bar",
+      "initialQuantity": 150,
+      "remainingQuantity": 150,
+      "unit": "g",
+      "tareWeightG": 0,
+      "costInr": 85,
+      "location": "Master Bathroom",
+      "status": "active",
+      "createdAt": "2026-10-19T08:25:00.269Z",
+      "updatedAt": "2026-10-19T08:26:54.316Z"
+    },
+    {
+      "id": "soap-dettol--rxxys",
+      "userId": "usr-1792392896626-rxxys",
+      "brand": "Dettol",
+      "name": "Original Antiseptic Bar",
+      "variant": "Pine Classic Formula",
+      "productType": "soap_bar",
+      "initialQuantity": 125,
+      "remainingQuantity": 94.5,
+      "unit": "g",
+      "tareWeightG": 0,
+      "costInr": 58,
+      "location": "Master Bathroom",
+      "barcode": "8901396312502",
+      "status": "active",
+      "createdAt": "2026-10-13T03:48:08.616Z",
+      "updatedAt": "2026-10-19T03:48:08.616Z"
+    },
+    {
+      "id": "soap-dove--rxxys",
+      "userId": "usr-1792392896626-rxxys",
       "brand": "Dove",
-      "name": "Beauty Moisture Bathing Bar",
-      "variant": "White / 1/4 Moisturising Cream",
+      "name": "Beauty Cream Bar",
+      "variant": "1/4 Moisturising Cream",
       "productType": "soap_bar",
       "initialQuantity": 100,
-      "remainingQuantity": 42,
+      "remainingQuantity": 76,
       "unit": "g",
-      "tareWeightG": 28,
+      "tareWeightG": 0,
       "costInr": 65,
-      "location": "Master Bathroom",
-      "assignedMemberId": "mem-1",
-      "barcode": "8901030383457",
+      "location": "Guest Washroom",
+      "barcode": "8901030383451",
       "status": "active",
-      "isSampleData": true,
-      "createdAt": "2026-10-01T09:00:00.000Z",
-      "updatedAt": "2026-10-18T14:30:00.000Z"
+      "createdAt": "2026-10-14T03:48:08.616Z",
+      "updatedAt": "2026-10-18T03:48:08.616Z"
     },
     {
-      "id": "item-2",
-      "brand": "Dettol",
-      "name": "Original Germ Protection Soap",
-      "variant": "Pine Fragrance",
-      "productType": "soap_bar",
-      "initialQuantity": 125,
-      "remainingQuantity": 18,
-      "unit": "g",
-      "tareWeightG": 30,
-      "costInr": 58,
-      "location": "Guest Bathroom",
-      "assignedMemberId": "mem-4",
-      "barcode": "8901396115203",
-      "status": "active",
-      "isSampleData": true,
-      "createdAt": "2026-10-02T10:00:00.000Z",
-      "updatedAt": "2026-10-18T18:00:00.000Z"
-    },
-    {
-      "id": "item-3",
-      "brand": "Pears",
-      "name": "Pure & Gentle Glycerine Bar",
-      "variant": "Natural Oils 100% Soap Free",
-      "productType": "soap_bar",
-      "initialQuantity": 125,
-      "remainingQuantity": 88,
-      "unit": "g",
-      "tareWeightG": 25,
-      "costInr": 82,
-      "location": "Master Bathroom",
-      "assignedMemberId": "mem-2",
-      "barcode": "8901030704986",
-      "status": "active",
-      "isSampleData": true,
-      "createdAt": "2026-10-05T11:00:00.000Z",
-      "updatedAt": "2026-10-17T09:15:00.000Z"
-    },
-    {
-      "id": "item-4",
+      "id": "soap-lifebuoy--rxxys",
+      "userId": "usr-1792392896626-rxxys",
       "brand": "Lifebuoy",
-      "name": "Total 10 Germ Protection Handwash",
-      "variant": "Liquid Handwash Pump",
+      "name": "Total Germ Protection Pump",
+      "variant": "Silver Shield Handwash",
       "productType": "liquid_handwash",
       "initialQuantity": 200,
-      "remainingQuantity": 95,
+      "remainingQuantity": 144,
       "unit": "ml",
-      "tareWeightG": 45,
+      "tareWeightG": 22,
       "costInr": 99,
-      "location": "Kids Bathroom",
-      "assignedMemberId": "mem-3",
-      "barcode": "8901030800001",
+      "location": "Kitchen Sink",
+      "barcode": "8901030000000",
       "status": "active",
-      "isSampleData": true,
-      "createdAt": "2026-10-01T08:30:00.000Z",
-      "updatedAt": "2026-10-18T19:30:00.000Z"
+      "createdAt": "2026-10-15T03:48:08.616Z",
+      "updatedAt": "2026-10-19T03:48:08.616Z"
     },
     {
-      "id": "item-5",
-      "brand": "Santoor",
-      "name": "Sandal & Turmeric Soap",
-      "variant": "Traditional Glow",
+      "id": "soap-dettol--gkoi2",
+      "userId": "usr-1792393151320-gkoi2",
+      "brand": "Dettol",
+      "name": "Original Antiseptic Bar",
+      "variant": "Pine Classic Formula",
+      "productType": "soap_bar",
+      "initialQuantity": 125,
+      "remainingQuantity": 94.5,
+      "unit": "g",
+      "tareWeightG": 0,
+      "costInr": 58,
+      "location": "Master Bathroom",
+      "barcode": "8901396312502",
+      "status": "active",
+      "createdAt": "2026-10-13T03:52:57.732Z",
+      "updatedAt": "2026-10-19T03:52:57.732Z"
+    },
+    {
+      "id": "soap-dove--gkoi2",
+      "userId": "usr-1792393151320-gkoi2",
+      "brand": "Dove",
+      "name": "Beauty Cream Bar",
+      "variant": "1/4 Moisturising Cream",
       "productType": "soap_bar",
       "initialQuantity": 100,
-      "remainingQuantity": 0,
+      "remainingQuantity": 76,
       "unit": "g",
-      "tareWeightG": 28,
-      "costInr": 45,
-      "location": "Guest Bathroom",
-      "assignedMemberId": "mem-4",
-      "barcode": "8901030005434",
-      "status": "finished",
-      "isSampleData": true,
-      "createdAt": "2026-09-10T10:00:00.000Z",
-      "updatedAt": "2026-10-01T12:00:00.000Z",
-      "finishedAt": "2026-10-01T12:00:00.000Z"
+      "tareWeightG": 0,
+      "costInr": 65,
+      "location": "Guest Washroom",
+      "barcode": "8901030383451",
+      "status": "active",
+      "createdAt": "2026-10-14T03:52:57.732Z",
+      "updatedAt": "2026-10-18T03:52:57.732Z"
+    },
+    {
+      "id": "soap-lifebuoy--gkoi2",
+      "userId": "usr-1792393151320-gkoi2",
+      "brand": "Lifebuoy",
+      "name": "Total Germ Protection Pump",
+      "variant": "Silver Shield Handwash",
+      "productType": "liquid_handwash",
+      "initialQuantity": 200,
+      "remainingQuantity": 144,
+      "unit": "ml",
+      "tareWeightG": 22,
+      "costInr": 99,
+      "location": "Kitchen Sink",
+      "barcode": "8901030000000",
+      "status": "active",
+      "createdAt": "2026-10-15T03:52:57.732Z",
+      "updatedAt": "2026-10-19T03:52:57.732Z"
     }
   ],
   "usageEvents": [
     {
-      "id": "evt-1",
-      "productId": "item-1",
-      "memberId": "mem-1",
-      "consumedQuantity": 6.5,
+      "id": "evt-1792398400562",
+      "userId": "usr-suneel-mveznrw1",
+      "productId": "soap-1792398300269",
+      "consumedQuantity": 36,
       "unit": "g",
-      "previousQuantity": 100,
-      "newQuantity": 93.5,
+      "previousQuantity": 146,
+      "newQuantity": 110,
       "method": "SCALE",
-      "scaleReading": 121.5,
-      "tareWeight": 28,
-      "isSampleData": true,
-      "createdAt": "2026-10-03T08:15:00.000Z",
+      "tareWeight": 0,
+      "notes": "Quick custom delta: 36g",
+      "createdAt": "2026-10-19T08:26:40.562Z",
       "auditTrail": [
         {
-          "timestamp": "2026-10-03T08:15:00.000Z",
-          "action": "CREATED"
+          "timestamp": "2026-10-19T08:26:40.562Z",
+          "action": "CREATED",
+          "newValue": 110
         }
       ]
     },
     {
-      "id": "evt-2",
-      "productId": "item-1",
-      "memberId": "mem-1",
-      "consumedQuantity": 14.5,
+      "id": "evt-1792398377142",
+      "userId": "usr-suneel-mveznrw1",
+      "productId": "soap-1792398300269",
+      "consumedQuantity": 4,
       "unit": "g",
-      "previousQuantity": 93.5,
-      "newQuantity": 79,
+      "previousQuantity": 150,
+      "newQuantity": 146,
       "method": "SCALE",
-      "scaleReading": 107,
-      "tareWeight": 28,
-      "isSampleData": true,
-      "createdAt": "2026-10-08T08:30:00.000Z",
+      "tareWeight": 0,
+      "notes": "Quick bar wash: 4g",
+      "createdAt": "2026-10-19T08:26:17.142Z",
       "auditTrail": [
         {
-          "timestamp": "2026-10-08T08:30:00.000Z",
-          "action": "CREATED"
+          "timestamp": "2026-10-19T08:26:17.142Z",
+          "action": "CREATED",
+          "newValue": 146
         }
       ]
     },
     {
-      "id": "evt-3",
-      "productId": "item-1",
-      "memberId": "mem-1",
-      "consumedQuantity": 18,
+      "id": "evt-d1--rxxys",
+      "userId": "usr-1792392896626-rxxys",
+      "productId": "soap-dettol--rxxys",
+      "consumedQuantity": 3.2,
       "unit": "g",
-      "previousQuantity": 79,
-      "newQuantity": 61,
-      "method": "SCALE",
-      "scaleReading": 89,
-      "tareWeight": 28,
-      "isSampleData": true,
-      "createdAt": "2026-10-13T09:00:00.000Z",
-      "auditTrail": [
-        {
-          "timestamp": "2026-10-13T09:00:00.000Z",
-          "action": "CREATED"
-        }
-      ]
-    },
-    {
-      "id": "evt-4",
-      "productId": "item-1",
-      "memberId": "mem-1",
-      "consumedQuantity": 19,
-      "unit": "g",
-      "previousQuantity": 61,
-      "newQuantity": 42,
-      "method": "SCALE",
-      "scaleReading": 70,
-      "tareWeight": 28,
-      "isSampleData": true,
-      "createdAt": "2026-10-18T14:30:00.000Z",
-      "auditTrail": [
-        {
-          "timestamp": "2026-10-18T14:30:00.000Z",
-          "action": "CREATED"
-        }
-      ]
-    },
-    {
-      "id": "evt-5",
-      "productId": "item-2",
-      "memberId": "mem-4",
-      "consumedQuantity": 35,
-      "unit": "g",
-      "previousQuantity": 125,
-      "newQuantity": 90,
+      "previousQuantity": 101,
+      "newQuantity": 97.8,
       "method": "MANUAL",
-      "isSampleData": true,
-      "createdAt": "2026-10-06T11:00:00.000Z",
+      "notes": "Morning shower",
+      "createdAt": "2026-10-17T03:48:08.616Z",
       "auditTrail": [
         {
-          "timestamp": "2026-10-06T11:00:00.000Z",
-          "action": "CREATED"
+          "timestamp": "2026-10-17T03:48:08.616Z",
+          "action": "CREATED",
+          "newValue": 97.8
         }
       ]
     },
     {
-      "id": "evt-6",
-      "productId": "item-2",
-      "memberId": "mem-4",
-      "consumedQuantity": 42,
+      "id": "evt-d2--rxxys",
+      "userId": "usr-1792392896626-rxxys",
+      "productId": "soap-dettol--rxxys",
+      "consumedQuantity": 3.3,
       "unit": "g",
-      "previousQuantity": 90,
-      "newQuantity": 48,
-      "method": "SCALE",
-      "scaleReading": 78,
-      "tareWeight": 30,
-      "isSampleData": true,
-      "createdAt": "2026-10-12T16:00:00.000Z",
+      "previousQuantity": 97.8,
+      "newQuantity": 94.5,
+      "method": "MANUAL",
+      "notes": "Evening bath",
+      "createdAt": "2026-10-19T03:48:08.616Z",
       "auditTrail": [
         {
-          "timestamp": "2026-10-12T16:00:00.000Z",
-          "action": "CREATED"
+          "timestamp": "2026-10-19T03:48:08.616Z",
+          "action": "CREATED",
+          "newValue": 94.5
         }
       ]
     },
     {
-      "id": "evt-7",
-      "productId": "item-2",
-      "memberId": "mem-4",
-      "consumedQuantity": 30,
+      "id": "evt-v1--rxxys",
+      "userId": "usr-1792392896626-rxxys",
+      "productId": "soap-dove--rxxys",
+      "consumedQuantity": 2.8,
       "unit": "g",
-      "previousQuantity": 48,
-      "newQuantity": 18,
-      "method": "SCALE",
-      "scaleReading": 48,
-      "tareWeight": 30,
-      "isSampleData": true,
-      "createdAt": "2026-10-18T18:00:00.000Z",
+      "previousQuantity": 82,
+      "newQuantity": 79.2,
+      "method": "MANUAL",
+      "notes": "Hand & face wash",
+      "createdAt": "2026-10-16T03:48:08.616Z",
       "auditTrail": [
         {
-          "timestamp": "2026-10-18T18:00:00.000Z",
-          "action": "CREATED"
+          "timestamp": "2026-10-16T03:48:08.616Z",
+          "action": "CREATED",
+          "newValue": 79.2
         }
       ]
     },
     {
-      "id": "evt-8",
-      "productId": "item-3",
-      "memberId": "mem-2",
-      "consumedQuantity": 37,
+      "id": "evt-v2--rxxys",
+      "userId": "usr-1792392896626-rxxys",
+      "productId": "soap-dove--rxxys",
+      "consumedQuantity": 3.2,
       "unit": "g",
-      "previousQuantity": 125,
-      "newQuantity": 88,
-      "method": "SCALE",
-      "scaleReading": 113,
-      "tareWeight": 25,
-      "isSampleData": true,
-      "createdAt": "2026-10-17T09:15:00.000Z",
+      "previousQuantity": 79.2,
+      "newQuantity": 76,
+      "method": "MANUAL",
+      "notes": "Gentle moisturising cleanse",
+      "createdAt": "2026-10-18T03:48:08.616Z",
       "auditTrail": [
         {
-          "timestamp": "2026-10-17T09:15:00.000Z",
-          "action": "CREATED"
+          "timestamp": "2026-10-18T03:48:08.616Z",
+          "action": "CREATED",
+          "newValue": 76
         }
       ]
     },
     {
-      "id": "evt-9",
-      "productId": "item-4",
-      "memberId": "mem-3",
-      "consumedQuantity": 45,
+      "id": "evt-l1--rxxys",
+      "userId": "usr-1792392896626-rxxys",
+      "productId": "soap-lifebuoy--rxxys",
+      "consumedQuantity": 3.6,
       "unit": "ml",
-      "previousQuantity": 200,
-      "newQuantity": 155,
+      "previousQuantity": 154.8,
+      "newQuantity": 151.2,
       "method": "PUMP_ESTIMATE",
-      "pumpCount": 30,
-      "mlPerPump": 1.5,
-      "isSampleData": true,
-      "createdAt": "2026-10-09T18:30:00.000Z",
+      "pumpCount": 2,
+      "mlPerPump": 1.8,
+      "notes": "Kitchen meal prep hygiene",
+      "createdAt": "2026-10-18T03:48:08.616Z",
       "auditTrail": [
         {
-          "timestamp": "2026-10-09T18:30:00.000Z",
-          "action": "CREATED"
+          "timestamp": "2026-10-18T03:48:08.616Z",
+          "action": "CREATED",
+          "newValue": 151.2
         }
       ]
     },
     {
-      "id": "evt-10",
-      "productId": "item-4",
-      "memberId": "mem-3",
-      "consumedQuantity": 60,
+      "id": "evt-l2--rxxys",
+      "userId": "usr-1792392896626-rxxys",
+      "productId": "soap-lifebuoy--rxxys",
+      "consumedQuantity": 7.2,
       "unit": "ml",
-      "previousQuantity": 155,
-      "newQuantity": 95,
+      "previousQuantity": 151.2,
+      "newQuantity": 144,
       "method": "PUMP_ESTIMATE",
-      "pumpCount": 40,
-      "mlPerPump": 1.5,
-      "isSampleData": true,
-      "createdAt": "2026-10-18T19:30:00.000Z",
+      "pumpCount": 4,
+      "mlPerPump": 1.8,
+      "notes": "Family hand hygiene cycle",
+      "createdAt": "2026-10-19T03:48:08.616Z",
       "auditTrail": [
         {
-          "timestamp": "2026-10-18T19:30:00.000Z",
-          "action": "CREATED"
+          "timestamp": "2026-10-19T03:48:08.616Z",
+          "action": "CREATED",
+          "newValue": 144
+        }
+      ]
+    },
+    {
+      "id": "evt-d1--gkoi2",
+      "userId": "usr-1792393151320-gkoi2",
+      "productId": "soap-dettol--gkoi2",
+      "consumedQuantity": 3.2,
+      "unit": "g",
+      "previousQuantity": 101,
+      "newQuantity": 97.8,
+      "method": "MANUAL",
+      "notes": "Morning shower",
+      "createdAt": "2026-10-17T03:52:57.732Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-17T03:52:57.732Z",
+          "action": "CREATED",
+          "newValue": 97.8
+        }
+      ]
+    },
+    {
+      "id": "evt-d2--gkoi2",
+      "userId": "usr-1792393151320-gkoi2",
+      "productId": "soap-dettol--gkoi2",
+      "consumedQuantity": 3.3,
+      "unit": "g",
+      "previousQuantity": 97.8,
+      "newQuantity": 94.5,
+      "method": "MANUAL",
+      "notes": "Evening bath",
+      "createdAt": "2026-10-19T03:52:57.732Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-19T03:52:57.732Z",
+          "action": "CREATED",
+          "newValue": 94.5
+        }
+      ]
+    },
+    {
+      "id": "evt-v1--gkoi2",
+      "userId": "usr-1792393151320-gkoi2",
+      "productId": "soap-dove--gkoi2",
+      "consumedQuantity": 2.8,
+      "unit": "g",
+      "previousQuantity": 82,
+      "newQuantity": 79.2,
+      "method": "MANUAL",
+      "notes": "Hand & face wash",
+      "createdAt": "2026-10-16T03:52:57.732Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-16T03:52:57.732Z",
+          "action": "CREATED",
+          "newValue": 79.2
+        }
+      ]
+    },
+    {
+      "id": "evt-v2--gkoi2",
+      "userId": "usr-1792393151320-gkoi2",
+      "productId": "soap-dove--gkoi2",
+      "consumedQuantity": 3.2,
+      "unit": "g",
+      "previousQuantity": 79.2,
+      "newQuantity": 76,
+      "method": "MANUAL",
+      "notes": "Gentle moisturising cleanse",
+      "createdAt": "2026-10-18T03:52:57.732Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-18T03:52:57.732Z",
+          "action": "CREATED",
+          "newValue": 76
+        }
+      ]
+    },
+    {
+      "id": "evt-l1--gkoi2",
+      "userId": "usr-1792393151320-gkoi2",
+      "productId": "soap-lifebuoy--gkoi2",
+      "consumedQuantity": 3.6,
+      "unit": "ml",
+      "previousQuantity": 154.8,
+      "newQuantity": 151.2,
+      "method": "PUMP_ESTIMATE",
+      "pumpCount": 2,
+      "mlPerPump": 1.8,
+      "notes": "Kitchen meal prep hygiene",
+      "createdAt": "2026-10-18T03:52:57.732Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-18T03:52:57.732Z",
+          "action": "CREATED",
+          "newValue": 151.2
+        }
+      ]
+    },
+    {
+      "id": "evt-l2--gkoi2",
+      "userId": "usr-1792393151320-gkoi2",
+      "productId": "soap-lifebuoy--gkoi2",
+      "consumedQuantity": 7.2,
+      "unit": "ml",
+      "previousQuantity": 151.2,
+      "newQuantity": 144,
+      "method": "PUMP_ESTIMATE",
+      "pumpCount": 4,
+      "mlPerPump": 1.8,
+      "notes": "Family hand hygiene cycle",
+      "createdAt": "2026-10-19T03:52:57.732Z",
+      "auditTrail": [
+        {
+          "timestamp": "2026-10-19T03:52:57.732Z",
+          "action": "CREATED",
+          "newValue": 144
         }
       ]
     }
   ],
-  "notificationPrefs": {
-    "id": "pref-default",
-    "lowStockThresholdPercent": 20,
-    "depletionWarningDays": 5,
-    "staleMeasurementAlertDays": 7,
-    "browserNotificationsEnabled": true,
-    "updatedAt": "2026-10-01T08:00:00.000Z"
+  "familyMembers": [
+    {
+      "id": "mem-usr-1792392896626-rxxys-1",
+      "userId": "usr-1792392896626-rxxys",
+      "name": "Sunil Sharma",
+      "avatar": "✨",
+      "role": "Admin",
+      "notes": "The Sharma Residence Primary Account Holder",
+      "createdAt": "2026-10-19T06:54:56.752Z"
+    },
+    {
+      "id": "mem-usr-1792393151320-gkoi2-1",
+      "userId": "usr-1792393151320-gkoi2",
+      "name": "sun",
+      "avatar": "✨",
+      "role": "Admin",
+      "notes": "sun homes Primary Account Holder",
+      "createdAt": "2026-10-19T06:59:11.464Z"
+    },
+    {
+      "id": "mem-usr-suneel-mveznrw1-1",
+      "userId": "usr-suneel-mveznrw1",
+      "name": "Suneel Hegde",
+      "avatar": "✨",
+      "role": "Admin",
+      "notes": "Suneel's Smart Household Primary Account Holder",
+      "createdAt": "2026-10-19T08:24:44.845Z"
+    }
+  ],
+  "notificationPrefs": [
+    {
+      "id": "pref-usr-1792392896626-rxxys",
+      "userId": "usr-1792392896626-rxxys",
+      "lowStockThresholdPercent": 20,
+      "depletionWarningDays": 5,
+      "staleMeasurementAlertDays": 7,
+      "browserNotificationsEnabled": true,
+      "updatedAt": "2026-10-19T06:54:56.752Z"
+    },
+    {
+      "id": "pref-usr-1792393151320-gkoi2",
+      "userId": "usr-1792393151320-gkoi2",
+      "lowStockThresholdPercent": 20,
+      "depletionWarningDays": 5,
+      "staleMeasurementAlertDays": 7,
+      "browserNotificationsEnabled": true,
+      "updatedAt": "2026-10-19T06:59:11.464Z"
+    },
+    {
+      "id": "pref-usr-suneel-mveznrw1",
+      "userId": "usr-suneel-mveznrw1",
+      "lowStockThresholdPercent": 20,
+      "depletionWarningDays": 5,
+      "staleMeasurementAlertDays": 7,
+      "browserNotificationsEnabled": true,
+      "updatedAt": "2026-10-19T08:24:44.845Z"
+    }
+  ],
+  "barcodeCatalog": {
+    "8901234000150": {
+      "brand": "Mysore Sandal",
+      "name": "Pure Sandalwood Bathing Bar",
+      "variant": "Natural Sandalwood Oil",
+      "productType": "soap_bar",
+      "weightGrams": 150,
+      "printedNetQuantity": 150,
+      "printedUnit": "g",
+      "priceInr": 85,
+      "colorHex": "#e6b84c",
+      "shape": "oval",
+      "fragrance": "Pure Karnataka Sandalwood",
+      "barcode": "8901234000150",
+      "confidence": 0.99,
+      "source": "barcode_catalog",
+      "packagingText": "Mysore Sandal Soap Net Wt 150g"
+    },
+    "8901030383457": {
+      "brand": "Dove",
+      "name": "Beauty Moisture Bathing Bar",
+      "variant": "1/4 Moisturising Cream",
+      "productType": "soap_bar",
+      "weightGrams": 100,
+      "printedNetQuantity": 100,
+      "printedUnit": "g",
+      "priceInr": 65,
+      "colorHex": "#f8fafc",
+      "shape": "oval",
+      "fragrance": "Signature Dove Fresh",
+      "barcode": "8901030383457",
+      "confidence": 0.99,
+      "source": "barcode_catalog",
+      "packagingText": "Dove 100g Beauty Bar"
+    },
+    "8901396115203": {
+      "brand": "Dettol",
+      "name": "Original Germ Protection Soap",
+      "variant": "Pine Fragrance",
+      "productType": "soap_bar",
+      "weightGrams": 125,
+      "printedNetQuantity": 125,
+      "printedUnit": "g",
+      "priceInr": 62,
+      "colorHex": "#d97706",
+      "shape": "rectangle",
+      "fragrance": "Classic Pine & Chloroxylenol",
+      "barcode": "8901396115203",
+      "confidence": 0.99,
+      "source": "barcode_catalog",
+      "packagingText": "Dettol Original 125g"
+    },
+    "8901030704986": {
+      "brand": "Pears",
+      "name": "Pure & Gentle Glycerine Bar",
+      "variant": "Natural Oils & 98% Pure Glycerine",
+      "productType": "soap_bar",
+      "weightGrams": 125,
+      "printedNetQuantity": 125,
+      "printedUnit": "g",
+      "priceInr": 88,
+      "colorHex": "#b45309",
+      "shape": "oval",
+      "fragrance": "Classic Amber Glycerine",
+      "barcode": "8901030704986",
+      "confidence": 0.99,
+      "source": "barcode_catalog",
+      "packagingText": "Pears Pure & Gentle 125g"
+    },
+    "8901030800001": {
+      "brand": "Lifebuoy",
+      "name": "Total 10 Liquid Handwash Pump",
+      "variant": "Active Silver Handwash",
+      "productType": "liquid_handwash",
+      "volumeMl": 200,
+      "printedNetQuantity": 200,
+      "printedUnit": "ml",
+      "priceInr": 99,
+      "colorHex": "#ef4444",
+      "shape": "cylinder",
+      "fragrance": "Fresh Cleanse",
+      "barcode": "8901030800001",
+      "confidence": 0.99,
+      "source": "barcode_catalog",
+      "packagingText": "Lifebuoy 200ml Pump"
+    },
+    "8904018300010": {
+      "brand": "Medimix",
+      "name": "18 Herbs Ayurvedic Classic Soap",
+      "variant": "18 Herbs Skin Care",
+      "productType": "soap_bar",
+      "weightGrams": 125,
+      "printedNetQuantity": 125,
+      "printedUnit": "g",
+      "priceInr": 52,
+      "colorHex": "#059669",
+      "shape": "rectangle",
+      "fragrance": "Ayurvedic Herbal Blend",
+      "barcode": "8904018300010",
+      "confidence": 0.99,
+      "source": "barcode_catalog",
+      "packagingText": "Medimix 18 Herbs 125g"
+    }
   }
 }

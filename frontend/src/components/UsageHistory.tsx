@@ -14,26 +14,26 @@ import {
 } from 'lucide-react';
 import { UsageEvent, InventoryItem, FamilyMember } from '../types/soap';
 import { exportUsageEventsToCSV } from '../lib/api';
+import { motion } from 'framer-motion';
+import { tableRowSlide } from '../lib/motionVariants';
 
 interface UsageHistoryProps {
   usageEvents: UsageEvent[];
   inventory: InventoryItem[];
   familyMembers: FamilyMember[];
-  includeSample: boolean;
+  includeSample?: boolean;
 }
 
 export const UsageHistory: React.FC<UsageHistoryProps> = ({
   usageEvents,
   inventory,
   familyMembers,
-  includeSample,
 }) => {
   const [productFilter, setProductFilter] = useState('all');
   const [methodFilter, setMethodFilter] = useState('all');
   const [search, setSearch] = useState('');
 
   const filteredEvents = usageEvents.filter(e => {
-    if (!includeSample && e.isSampleData) return false;
     if (productFilter !== 'all' && e.productId !== productFilter) return false;
     if (methodFilter !== 'all' && e.method !== methodFilter) return false;
 
@@ -132,7 +132,7 @@ export const UsageHistory: React.FC<UsageHistoryProps> = ({
                   </td>
                 </tr>
               ) : (
-                filteredEvents.map(event => {
+                filteredEvents.map((event, idx) => {
                   const prod = inventory.find(i => i.id === event.productId);
                   const member = familyMembers.find(m => m.id === event.memberId);
                   const dateStr = new Date(event.createdAt).toLocaleDateString('en-US', {
@@ -144,9 +144,13 @@ export const UsageHistory: React.FC<UsageHistoryProps> = ({
                   });
 
                   return (
-                    <tr
+                    <motion.tr
                       key={event.id}
-                      className="hover:bg-slate-50/60 dark:hover:bg-obsidian-700/40 transition"
+                      variants={tableRowSlide}
+                      initial="initial"
+                      animate="animate"
+                      transition={{ delay: idx * 0.03, duration: 0.25, ease: 'easeOut' }}
+                      className="hover:bg-emerald-500/10 hover:border-emerald-500/30 transition-all cursor-default"
                     >
                       <td className="py-3 px-4 text-slate-500 dark:text-slate-400 font-mono text-[11px] whitespace-nowrap">
                         {dateStr}
@@ -192,11 +196,6 @@ export const UsageHistory: React.FC<UsageHistoryProps> = ({
                             <Droplet className="w-3 h-3" /> PUMP ESTIMATE
                           </span>
                         )}
-                        {event.isSampleData && (
-                          <span className="ml-1 inline-flex items-center text-[9px] px-1.5 py-0.2 rounded bg-slate-200 dark:bg-obsidian-700 text-slate-500">
-                            SAMPLE
-                          </span>
-                        )}
                       </td>
 
                       <td className="py-3 px-4 text-slate-700 dark:text-slate-300">
@@ -223,7 +222,7 @@ export const UsageHistory: React.FC<UsageHistoryProps> = ({
                         )}
                         {event.notes && <div className="italic text-slate-400">&ldquo;{event.notes}&rdquo;</div>}
                       </td>
-                    </tr>
+                    </motion.tr>
                   );
                 })
               )}
