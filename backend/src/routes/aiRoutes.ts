@@ -5,11 +5,11 @@ import {
   generateMonthlyInsights,
   resolveSoapBarcode,
   autoDetectSoapFromFrame,
-} from '../services/ollamaService';
-import { getUserState } from '../services/dbService';
-import { requireAuth, AuthenticatedRequest } from '../services/authService';
-import { InventoryItem, UsageEvent } from '../types';
-import { loadVisualMemory, teachVisualSample } from '../services/visualMemoryService';
+} from '../services/ollamaService.js';
+import { getUserState } from '../services/dbService.js';
+import { requireAuth, AuthenticatedRequest } from '../services/authService.js';
+import { InventoryItem, UsageEvent } from '../types.js';
+import { loadVisualMemory, teachVisualSample } from '../services/visualMemoryService.js';
 
 export const aiRouter = Router();
 

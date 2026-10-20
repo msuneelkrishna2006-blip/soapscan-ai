@@ -7,13 +7,13 @@ import {
   UsageEvent,
   ResolvedSoapSpec,
   AutoDetectResult,
-} from '../types';
-import { getBarcodeCatalogItem, saveBarcodeCatalogItem } from './dbService';
+} from '../types.js';
+import { getBarcodeCatalogItem, saveBarcodeCatalogItem } from './dbService.js';
 import {
   classifyByVisualMemory,
   teachVisualSample,
   isHumanSkinOrWarmLighting,
-} from './visualMemoryService';
+} from './visualMemoryService.js';
 
 export const OLLAMA_HOST = process.env.OLLAMA_HOST || 'http://localhost:11434';
 export let OLLAMA_MODEL = 'soapscan-gemma4';

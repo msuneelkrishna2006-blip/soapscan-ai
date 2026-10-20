@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { verifyToken } from '../services/authService';
+import { verifyToken } from '../services/authService.js';
 
 export const realtimeRouter = Router();
 

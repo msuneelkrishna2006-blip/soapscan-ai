@@ -1,10 +1,16 @@
 import crypto from 'crypto';
 import { Request, Response, NextFunction } from 'express';
-import { User, UserProfile } from '../types';
+import { User, UserProfile } from '../types.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'soapscan_cosmic_jwt_secret_key_2026_x99';
 
-export interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest<
+  P = any,
+  ResBody = any,
+  ReqBody = any,
+  ReqQuery = any,
+  Locals extends Record<string, any> = Record<string, any>
+> extends Request<P, ResBody, ReqBody, ReqQuery, Locals> {
   user?: UserProfile;
   userId?: string;
 }

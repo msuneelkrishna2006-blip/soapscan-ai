@@ -3,15 +3,15 @@ import {
   findUserByEmail,
   findUserById,
   createUser,
-} from '../services/dbService';
+} from '../services/dbService.js';
 import {
   hashPassword,
   verifyPassword,
   signToken,
   requireAuth,
   AuthenticatedRequest,
-} from '../services/authService';
-import { User, UserProfile } from '../types';
+} from '../services/authService.js';
+import { User, UserProfile } from '../types.js';
 
 export const authRouter = Router();
 

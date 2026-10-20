@@ -9,10 +9,10 @@ import {
   deleteInventoryItem,
   logUsageEvent,
   addFamilyMember,
-} from '../services/dbService';
-import { requireAuth, AuthenticatedRequest } from '../services/authService';
-import { broadcastToUser } from './realtimeRoutes';
-import { InventoryItem, UsageEvent, FamilyMember } from '../types';
+} from '../services/dbService.js';
+import { requireAuth, AuthenticatedRequest } from '../services/authService.js';
+import { broadcastToUser } from './realtimeRoutes.js';
+import { InventoryItem, UsageEvent, FamilyMember } from '../types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

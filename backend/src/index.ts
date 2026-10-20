@@ -1,10 +1,10 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
-import { authRouter } from './routes/authRoutes';
-import { aiRouter } from './routes/aiRoutes';
-import { inventoryRouter } from './routes/inventoryRoutes';
-import { realtimeRouter } from './routes/realtimeRoutes';
-import { OLLAMA_HOST, OLLAMA_MODEL, prewarmOllama } from './services/ollamaService';
+import { authRouter } from './routes/authRoutes.js';
+import { aiRouter } from './routes/aiRoutes.js';
+import { inventoryRouter } from './routes/inventoryRoutes.js';
+import { realtimeRouter } from './routes/realtimeRoutes.js';
+import { OLLAMA_HOST, OLLAMA_MODEL, prewarmOllama } from './services/ollamaService.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -14,14 +14,14 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Health check (public)
-app.get('/api/health', (_req, res) => {
+app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', service: 'soapscan-backend', port: PORT });
 });
 
 // Dedicated Public Soap Barcode Endpoint
-app.get('/api/soaps/barcode/:code', async (req, res) => {
+app.get('/api/soaps/barcode/:code', async (req: Request, res: Response) => {
   try {
-    const { resolveSoapBarcode } = await import('./services/ollamaService');
+    const { resolveSoapBarcode } = await import('./services/ollamaService.js');
     const code = Array.isArray(req.params.code) ? req.params.code[0] : req.params.code;
     const spec = await resolveSoapBarcode(code);
     return res.json(spec);

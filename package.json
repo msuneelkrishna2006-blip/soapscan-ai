@@ -7,11 +7,10 @@
     "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"cyan,green\" \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
     "dev:backend": "npm --prefix backend run dev",
     "dev:frontend": "npm --prefix frontend run dev",
-    "build": "npm --prefix backend install && npm --prefix backend run build",
+    "build": "npm --prefix frontend run build && npm --prefix backend run build",
     "build:backend": "npm --prefix backend install && npm --prefix backend run build",
-    "build:all": "npm --prefix backend install && npm --prefix backend run build && npm --prefix frontend install && npm --prefix frontend run build",
-    "start": "npx tsx backend/src/index.ts",
-    "start:backend": "npx tsx backend/src/index.ts",
+    "start": "node backend/dist/index.js",
+    "start:backend": "node backend/dist/index.js",
     "test": "npm --prefix frontend run test"
   },
   "devDependencies": {
