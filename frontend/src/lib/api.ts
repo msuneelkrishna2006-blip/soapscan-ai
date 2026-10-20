@@ -12,17 +12,9 @@ import {
   AutoDetectResult,
 } from '../types/soap';
 
-const RAW_BACKEND_URL = (
-  ((import.meta as any)?.env?.VITE_API_URL as string | undefined) ||
-  ((import.meta as any)?.env?.VITE_BACKEND_URL as string | undefined) ||
-  ''
-).trim();
+import { API_URL, SSE_STREAM_URL } from '../config/api';
 
-const BASE_URL = RAW_BACKEND_URL
-  ? RAW_BACKEND_URL.endsWith('/api')
-    ? RAW_BACKEND_URL
-    : `${RAW_BACKEND_URL.replace(/\/+$/, '')}/api`
-  : '/api';
+const BASE_URL = API_URL;
 
 export function getAuthToken(): string | null {
   return localStorage.getItem('soapscan_token');
@@ -409,7 +401,7 @@ export function subscribeRealtimeStream(callbacks: {
   const token = getAuthToken();
   if (!token) return () => {};
 
-  const eventSource = new EventSource(`${BASE_URL}/realtime/stream?token=${encodeURIComponent(token)}`);
+  const eventSource = new EventSource(`${SSE_STREAM_URL}?token=${encodeURIComponent(token)}`);
 
   eventSource.addEventListener('connected', e => {
     try {

@@ -134,7 +134,9 @@ export const CosmicHomePage: React.FC<CosmicHomePageProps> = ({
             {aiStatus?.online ? `Gemma 4 Local AI Online (Latency: ~12ms)` : 'Cosmic Telemetry System Active'}
           </span>
           <span className="text-slate-500">•</span>
-          <span className="text-xs text-amber-300 font-medium font-mono">Port 5173 / 3001</span>
+          <span className="text-xs text-amber-300 font-medium font-mono">
+            {import.meta.env.PROD ? 'Cloud Mesh Live' : 'Port 5173 / 3001'}
+          </span>
         </motion.div>
 
         {/* Hero Title with Staggered Word Reveal & Shimmer */}

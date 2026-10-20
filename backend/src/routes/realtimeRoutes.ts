@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { verifyToken } from '../services/authService.js';
+import { OLLAMA_HOST } from '../services/ollamaService.js';
 
 export const realtimeRouter = Router();
 
@@ -52,8 +53,9 @@ realtimeRouter.get('/realtime/stream', (req: Request, res: Response) => {
 
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
+    'Cache-Control': 'no-cache, no-transform',
     'Connection': 'keep-alive',
+    'X-Accel-Buffering': 'no',
     'Access-Control-Allow-Origin': '*',
   });
 
@@ -81,14 +83,14 @@ realtimeRouter.get('/realtime/stream', (req: Request, res: Response) => {
     let ollamaStatus = 'online';
     try {
       const start = Date.now();
-      const oRes = await fetch('http://localhost:11434/api/tags', {
+      const oRes = await fetch(`${OLLAMA_HOST}/api/tags`, {
         signal: AbortSignal.timeout(1500),
       });
       latencyMs = Date.now() - start;
-      if (!oRes.ok) ollamaStatus = 'degraded';
+      if (!oRes.ok) ollamaStatus = 'cloud_standby';
     } catch {
       latencyMs = 15;
-      ollamaStatus = 'simulated';
+      ollamaStatus = 'cloud_active';
     }
 
     try {

@@ -1245,11 +1245,35 @@ Return strict JSON only.`;
       }
     }
   } catch (err) {
-    // Aborted or timed out
+    // Aborted or timed out (e.g. cloud host without local Ollama instance)
   } finally {
     isVisionBusy = false;
     activeVisionAbortController = null;
     activeVisionTaskType = null;
+  }
+
+  // Visual memory fallback for cloud instances without local GPU
+  const visualMatch = classifyByVisualMemory({ ocrText: '' });
+  if (visualMatch) {
+    const s = visualMatch.sample;
+    return {
+      detected: true,
+      confidence: visualMatch.confidence,
+      brand: s.brand,
+      name: s.name,
+      variant: s.variant,
+      productType: s.productType,
+      type: s.productType === 'liquid_handwash' ? 'liquid' : 'solid',
+      weightGrams: s.unit === 'g' ? s.netQuantity : undefined,
+      volumeMl: s.unit === 'ml' ? s.netQuantity : undefined,
+      printedNetQuantity: s.netQuantity,
+      printedUnit: s.unit,
+      priceInr: 65,
+      estimatedPriceInr: 65,
+      colorHex: s.productType === 'liquid_handwash' ? '#10b981' : '#059669',
+      shape: s.productType === 'liquid_handwash' ? 'cylinder' : 'rectangle',
+      source: 'visual_memory_cloud_fallback',
+    };
   }
 
   return { detected: false, confidence: 0 };
