@@ -40,6 +40,7 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
 
   // Status & Warp
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [statusNotice, setStatusNotice] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isWarping, setIsWarping] = useState(false);
 
@@ -54,6 +55,7 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+    setStatusNotice(null);
 
     if (authMode === 'register') {
       if (!name.trim()) {
@@ -81,6 +83,10 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
     }
 
     setIsSubmitting(true);
+    const slowNoticeTimer = setTimeout(() => {
+      setStatusNotice('Render backend waking from sleep (establishing secure link)...');
+    }, 2000);
+
     try {
       if (authMode === 'register') {
         const response = await registerUser({
@@ -89,15 +95,19 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
           password,
           householdName: householdName.trim() || undefined,
         });
+        clearTimeout(slowNoticeTimer);
         handleSuccessfulAuth(response.user);
       } else {
         const response = await loginUser({
           email: email.trim().toLowerCase(),
           password,
         });
+        clearTimeout(slowNoticeTimer);
         handleSuccessfulAuth(response.user);
       }
     } catch (err: any) {
+      clearTimeout(slowNoticeTimer);
+      setStatusNotice(null);
       setErrorMessage(err.message || 'Authentication failed. Please check your credentials.');
     } finally {
       setIsSubmitting(false);
@@ -106,11 +116,20 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
 
   const handleInstantCommander = async () => {
     setErrorMessage(null);
+    setStatusNotice(null);
     setIsSubmitting(true);
+
+    const slowNoticeTimer = setTimeout(() => {
+      setStatusNotice('Render backend waking from sleep (launching Commander session)...');
+    }, 1800);
+
     try {
       const response = await demoLogin();
+      clearTimeout(slowNoticeTimer);
       handleSuccessfulAuth(response.user);
     } catch (err: any) {
+      clearTimeout(slowNoticeTimer);
+      setStatusNotice(null);
       setErrorMessage(err.message || 'Instant Commander Login failed.');
     } finally {
       setIsSubmitting(false);
@@ -206,6 +225,13 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
                 Create Household
               </button>
             </div>
+
+            {statusNotice && (
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-2.5 animate-pulse">
+                <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+                <span>{statusNotice}</span>
+              </div>
+            )}
 
             {errorMessage && (
               <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-start gap-2">

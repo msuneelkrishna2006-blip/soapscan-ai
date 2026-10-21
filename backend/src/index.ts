@@ -9,7 +9,7 @@ import { OLLAMA_HOST, OLLAMA_MODEL, prewarmOllama } from './services/ollamaServi
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Production-grade permissive CORS configuration for Vercel, Render, and local frontend
+// Production-grade permissive CORS configuration for Vercel (*.vercel.app), Render, and local frontend
 const corsOptions: cors.CorsOptions = {
   origin: true,
   credentials: true,
@@ -19,6 +19,22 @@ const corsOptions: cors.CorsOptions = {
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
+
+// Explicit preflight fallback handler for strict cloud proxies and Vercel edge routes
+app.use((req: Request, res: Response, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));

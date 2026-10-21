@@ -37,6 +37,7 @@ export const CosmicAuthPortal: React.FC<CosmicAuthPortalProps> = ({
 
   // Status & Warp
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [statusNotice, setStatusNotice] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isWarping, setIsWarping] = useState(false);
   const [authenticatedUser, setAuthenticatedUser] = useState<UserProfile | null>(null);
@@ -44,6 +45,7 @@ export const CosmicAuthPortal: React.FC<CosmicAuthPortalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+    setStatusNotice(null);
 
     if (authMode === 'register') {
       if (!name.trim()) {
@@ -71,6 +73,10 @@ export const CosmicAuthPortal: React.FC<CosmicAuthPortalProps> = ({
     }
 
     setIsSubmitting(true);
+    const slowNoticeTimer = setTimeout(() => {
+      setStatusNotice('Render backend waking from sleep (establishing secure link)...');
+    }, 2000);
+
     try {
       if (authMode === 'register') {
         const response = await registerUser({
@@ -79,18 +85,22 @@ export const CosmicAuthPortal: React.FC<CosmicAuthPortalProps> = ({
           password,
           householdName: householdName.trim() || undefined,
         });
+        clearTimeout(slowNoticeTimer);
         setAuthenticatedUser(response.user);
       } else {
         const response = await loginUser({
           email: email.trim().toLowerCase(),
           password,
         });
+        clearTimeout(slowNoticeTimer);
         setAuthenticatedUser(response.user);
       }
 
       // Trigger 3D camera warp transition
       setIsWarping(true);
     } catch (err: any) {
+      clearTimeout(slowNoticeTimer);
+      setStatusNotice(null);
       setErrorMessage(err.message || 'Authentication failed. Please check your credentials.');
     } finally {
       setIsSubmitting(false);
@@ -188,6 +198,14 @@ export const CosmicAuthPortal: React.FC<CosmicAuthPortalProps> = ({
             Create Account
           </button>
         </div>
+
+        {/* Cold Start Status Notice */}
+        {statusNotice && (
+          <div className="mb-4 p-3 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs flex items-center gap-2.5 animate-pulse">
+            <div className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
+            <span>{statusNotice}</span>
+          </div>
+        )}
 
         {/* Error Alert Box */}
         {errorMessage && (
