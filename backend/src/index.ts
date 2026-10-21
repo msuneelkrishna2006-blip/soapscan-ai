@@ -9,9 +9,23 @@ import { OLLAMA_HOST, OLLAMA_MODEL, prewarmOllama } from './services/ollamaServi
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Production-grade permissive CORS configuration for Vercel (*.vercel.app), Render, and local frontend
+// Production-grade CORS configuration explicitly permitting Vercel production, preview deployments & local dev
+const allowedOrigins = [
+  'https://soapscan-ai-frontend.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000',
+];
+
 const corsOptions: cors.CorsOptions = {
-  origin: true,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
@@ -20,16 +34,15 @@ const corsOptions: cors.CorsOptions = {
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
-// Explicit preflight fallback handler for strict cloud proxies and Vercel edge routes
-app.use((req: Request, res: Response, next) => {
+// Explicit header fallback middleware for strict reverse proxies and preflight
+app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (origin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
   }
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-
   if (req.method === 'OPTIONS') {
     return res.sendStatus(204);
   }

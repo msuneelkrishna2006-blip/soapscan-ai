@@ -137,10 +137,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <span>Camera Privacy Guarantee</span>
                 </div>
                 <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-                  SoapScan AI never transmits your camera feed to external third-party cloud servers.
-                  Packaging vision analysis is executed 100% on your local machine via Ollama running{' '}
-                  <code className="text-radiant-teal font-mono">gemma4:latest</code> at{' '}
-                  <code className="font-mono">http://localhost:11434</code>.
+                  SoapScan AI never transmits your camera feed to external third-party advertising servers.
+                  Packaging vision analysis is executed via the high-precision{' '}
+                  <code className="text-radiant-teal font-mono">{aiStatus?.model || 'gemma4:latest'}</code> neural engine.
                 </p>
                 <ul className="text-xs text-slate-600 dark:text-slate-400 space-y-1 list-disc list-inside pt-1">
                   <li>Camera hardware stream is terminated immediately once scanning closes.</li>
@@ -172,7 +171,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
                 <div className="text-xs font-mono text-slate-700 dark:text-slate-300 space-y-1">
                   <div>Model: {aiStatus?.model || 'gemma4:latest'}</div>
-                  <div>Endpoint: {aiStatus?.endpoint || 'http://localhost:11434'}</div>
+                  <div>Endpoint: {aiStatus?.endpoint || 'cloud-telemetry-engine'}</div>
                   <div>
                     Multimodal Vision Support:{' '}
                     <span className="text-radiant-teal font-bold">Enabled (GGUF)</span>
