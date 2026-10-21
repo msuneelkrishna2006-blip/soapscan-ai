@@ -123,7 +123,7 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
       </div>
 
       {/* Table Grid */}
-      <div className="rounded-2xl bg-white dark:bg-obsidian-800 border border-slate-200 dark:border-teal-900/30 shadow-sm overflow-hidden">
+      <div className="spotlight-card rounded-2xl bg-white dark:bg-obsidian-800 border border-slate-200 dark:border-teal-900/30 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 dark:bg-obsidian-900/80 text-slate-500 uppercase tracking-wider font-semibold border-b border-slate-200 dark:border-obsidian-700">

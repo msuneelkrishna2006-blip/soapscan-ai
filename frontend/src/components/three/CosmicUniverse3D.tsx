@@ -8,7 +8,7 @@ interface CosmicUniverse3DProps {
   onWarpComplete?: () => void;
   showSoapCore?: boolean;
   interactiveParallax?: boolean;
-  intensity?: 'low' | 'medium' | 'high';
+  intensity?: 'low' | 'medium' | 'high' | 'warp';
 }
 
 // Procedural high-resolution radial soft-glow circular texture (ZERO blocky squares)
@@ -262,19 +262,35 @@ export const CosmicUniverse3D: React.FC<CosmicUniverse3DProps> = ({
   const [hasWebGLError, setHasWebGLError] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-  const starCount = intensity === 'high' ? 6500 : intensity === 'medium' ? 5000 : 3200;
+  const isWarpingNow = warpActive || intensity === 'warp';
+  const starCount =
+    intensity === 'warp'
+      ? 7500
+      : intensity === 'high'
+      ? 6500
+      : intensity === 'medium'
+      ? 5000
+      : 3200;
 
   useEffect(() => {
     if (!interactiveParallax) return;
 
+    let rafId: number | null = null;
     const handleMouseMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth) * 2 - 1;
-      const y = -(e.clientY / window.innerHeight) * 2 + 1;
-      setMousePos({ x, y });
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        const x = (e.clientX / window.innerWidth) * 2 - 1;
+        const y = -(e.clientY / window.innerHeight) * 2 + 1;
+        setMousePos({ x, y });
+        rafId = null;
+      });
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, [interactiveParallax]);
 
   useEffect(() => {
@@ -318,10 +334,10 @@ export const CosmicUniverse3D: React.FC<CosmicUniverse3DProps> = ({
         <pointLight position={[0, -15, 5]} intensity={1.8} color="#06b6d4" />
 
         {/* 5,000+ Smooth Circular Glow Stars */}
-        <StarfieldSystem count={starCount} warpActive={warpActive} mousePos={mousePos} />
+        <StarfieldSystem count={starCount} warpActive={isWarpingNow} mousePos={mousePos} />
 
         {/* 3D Orbital Rings & Iridescent Crystalline Soap Core */}
-        {showSoapCore && <GyroscopeSoapCore mousePos={mousePos} warpActive={warpActive} />}
+        {showSoapCore && <GyroscopeSoapCore mousePos={mousePos} warpActive={isWarpingNow} />}
       </Canvas>
 
       {/* Subtle Cosmic Vignette & Color Gradients */}

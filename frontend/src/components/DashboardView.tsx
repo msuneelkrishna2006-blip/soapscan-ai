@@ -191,7 +191,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <TiltCard3D>
             <div
               onClick={() => handleKpiClick('solid')}
-              className="p-4 rounded-2xl bg-white/95 dark:bg-obsidian-900/90 border border-slate-200 dark:border-teal-900/40 shadow-lg hover:border-radiant-teal/60 cursor-pointer backdrop-blur transition flex flex-col justify-between h-full group"
+              className="spotlight-card p-4 rounded-2xl bg-white/95 dark:bg-obsidian-900/90 border border-slate-200 dark:border-teal-900/40 shadow-lg hover:border-radiant-teal/60 cursor-pointer backdrop-blur transition flex flex-col justify-between h-full group"
             >
               <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider group-hover:text-radiant-teal transition">
@@ -232,7 +232,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <TiltCard3D>
             <div
               onClick={() => handleKpiClick('liquid')}
-              className="p-4 rounded-2xl bg-white/95 dark:bg-obsidian-900/90 border border-slate-200 dark:border-teal-900/40 shadow-lg hover:border-cyan-400/60 cursor-pointer backdrop-blur transition flex flex-col justify-between h-full group"
+              className="spotlight-card p-4 rounded-2xl bg-white/95 dark:bg-obsidian-900/90 border border-slate-200 dark:border-teal-900/40 shadow-lg hover:border-cyan-400/60 cursor-pointer backdrop-blur transition flex flex-col justify-between h-full group"
             >
               <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider group-hover:text-cyan-400 transition">
@@ -273,7 +273,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <TiltCard3D>
             <div
               onClick={() => handleKpiClick('inventory')}
-              className="p-4 rounded-2xl bg-white/95 dark:bg-obsidian-900/90 border border-slate-200 dark:border-teal-900/40 shadow-lg hover:border-emerald-400/60 cursor-pointer backdrop-blur transition flex flex-col justify-between h-full group"
+              className="spotlight-card p-4 rounded-2xl bg-white/95 dark:bg-obsidian-900/90 border border-slate-200 dark:border-teal-900/40 shadow-lg hover:border-emerald-400/60 cursor-pointer backdrop-blur transition flex flex-col justify-between h-full group"
             >
               <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider group-hover:text-emerald-400 transition">
@@ -309,7 +309,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <TiltCard3D>
             <div
               onClick={() => handleKpiClick('spending')}
-              className="p-4 rounded-2xl bg-white/95 dark:bg-obsidian-900/90 border border-slate-200 dark:border-teal-900/40 shadow-lg hover:border-gold-400/60 cursor-pointer backdrop-blur transition flex flex-col justify-between h-full group"
+              className="spotlight-card p-4 rounded-2xl bg-white/95 dark:bg-obsidian-900/90 border border-slate-200 dark:border-teal-900/40 shadow-lg hover:border-gold-400/60 cursor-pointer backdrop-blur transition flex flex-col justify-between h-full group"
             >
               <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider group-hover:text-gold-400 transition">
@@ -358,7 +358,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <TiltCard3D>
             <div
               onClick={() => handleKpiClick('days')}
-              className="p-4 rounded-2xl bg-white/95 dark:bg-obsidian-900/90 border border-slate-200 dark:border-teal-900/40 shadow-lg hover:border-purple-400/60 cursor-pointer backdrop-blur transition flex flex-col justify-between h-full group"
+              className="spotlight-card p-4 rounded-2xl bg-white/95 dark:bg-obsidian-900/90 border border-slate-200 dark:border-teal-900/40 shadow-lg hover:border-purple-400/60 cursor-pointer backdrop-blur transition flex flex-col justify-between h-full group"
             >
               <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider group-hover:text-purple-400 transition">
@@ -389,7 +389,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <TiltCard3D>
             <div
               onClick={() => handleKpiClick('top')}
-              className="p-4 rounded-2xl bg-white/95 dark:bg-obsidian-900/90 border border-slate-200 dark:border-teal-900/40 shadow-lg hover:border-amber-400/60 cursor-pointer backdrop-blur transition flex flex-col justify-between h-full group"
+              className="spotlight-card p-4 rounded-2xl bg-white/95 dark:bg-obsidian-900/90 border border-slate-200 dark:border-teal-900/40 shadow-lg hover:border-amber-400/60 cursor-pointer backdrop-blur transition flex flex-col justify-between h-full group"
             >
               <div className="flex items-center justify-between text-slate-500 dark:text-slate-400 mb-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider group-hover:text-amber-400 transition">

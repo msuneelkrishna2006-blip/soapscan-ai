@@ -121,7 +121,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
       {/* Real-Data KPI Summary Row with Smooth Count-Up */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <ScrollReveal direction="up" delay={0.05}>
-          <div className="p-4 rounded-2xl bg-white/70 dark:bg-obsidian-900/70 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-radiant-teal/50 hover:shadow-lg hover:shadow-radiant-teal/5 transition-all">
+          <div className="spotlight-card p-4 rounded-2xl bg-white/70 dark:bg-obsidian-900/70 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-radiant-teal/50 hover:shadow-lg hover:shadow-radiant-teal/5 transition-all">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Solid Soap Consumed</span>
               <div className="p-1.5 rounded-lg bg-teal-500/10 text-radiant-teal">
@@ -139,7 +139,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
         </ScrollReveal>
 
         <ScrollReveal direction="up" delay={0.1}>
-          <div className="p-4 rounded-2xl bg-white/70 dark:bg-obsidian-900/70 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/5 transition-all">
+          <div className="spotlight-card p-4 rounded-2xl bg-white/70 dark:bg-obsidian-900/70 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/5 transition-all">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Liquid Soap Pumped</span>
               <div className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400">
@@ -157,7 +157,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
         </ScrollReveal>
 
         <ScrollReveal direction="up" delay={0.15}>
-          <div className="p-4 rounded-2xl bg-white/70 dark:bg-obsidian-900/70 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-gold-500/50 hover:shadow-lg hover:shadow-gold-500/5 transition-all">
+          <div className="spotlight-card p-4 rounded-2xl bg-white/70 dark:bg-obsidian-900/70 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-gold-500/50 hover:shadow-lg hover:shadow-gold-500/5 transition-all">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Estimated Burn Value</span>
               <div className="p-1.5 rounded-lg bg-gold-500/10 text-gold-400">
@@ -175,7 +175,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
         </ScrollReveal>
 
         <ScrollReveal direction="up" delay={0.2}>
-          <div className="p-4 rounded-2xl bg-white/70 dark:bg-obsidian-900/70 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/5 transition-all">
+          <div className="spotlight-card p-4 rounded-2xl bg-white/70 dark:bg-obsidian-900/70 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/5 transition-all">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Active Products</span>
               <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400">
@@ -204,7 +204,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
           className="grid grid-cols-1 lg:grid-cols-2 gap-6"
         >
           {/* Chart 1: Soap Consumption by Product */}
-          <div className="p-5 rounded-2xl bg-white/70 dark:bg-obsidian-900/80 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-teal-500/40 transition-all space-y-4">
+          <div className="spotlight-card p-5 rounded-2xl bg-white/70 dark:bg-obsidian-900/80 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-teal-500/40 transition-all space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-obsidian-800 pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-radiant-teal animate-pulse" />
@@ -235,7 +235,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
                       textAnchor="end"
                     />
                     <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip />} allowEscapeViewBox={{ x: true, y: true }} cursor={{ fill: 'rgba(20, 184, 166, 0.12)' }} />
                     <Bar
                       dataKey="totalConsumed"
                       name="Consumed"
@@ -251,7 +251,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
           </div>
 
           {/* Chart 2: Consumption by Family Member */}
-          <div className="p-5 rounded-2xl bg-white/70 dark:bg-obsidian-900/80 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-cyan-500/40 transition-all space-y-4">
+          <div className="spotlight-card p-5 rounded-2xl bg-white/70 dark:bg-obsidian-900/80 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-cyan-500/40 transition-all space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-obsidian-800 pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-cyan-400" />
@@ -268,7 +268,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
                   <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.3} />
                   <XAxis dataKey="memberName" stroke="#64748b" fontSize={11} tickLine={false} />
                   <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
-                  <Tooltip content={<CustomTooltip />} />
+                  <Tooltip content={<CustomTooltip />} allowEscapeViewBox={{ x: true, y: true }} cursor={{ fill: 'rgba(56, 189, 248, 0.12)' }} />
                   <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
                   <Bar dataKey="totalSolidG" name="Solid Bar (g)" fill="#14B8A6" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" />
                   <Bar dataKey="totalLiquidMl" name="Liquid (mL)" fill="#38BDF8" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" />
@@ -278,7 +278,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
           </div>
 
           {/* Chart 3: Daily Usage Progression */}
-          <div className="p-5 rounded-2xl bg-white/70 dark:bg-obsidian-900/80 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-teal-500/40 transition-all space-y-4">
+          <div className="spotlight-card p-5 rounded-2xl bg-white/70 dark:bg-obsidian-900/80 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-teal-500/40 transition-all space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-obsidian-800 pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-teal-400" />
@@ -305,7 +305,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
                   <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.3} />
                   <XAxis dataKey="dayLabel" stroke="#64748b" fontSize={11} tickLine={false} />
                   <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
-                  <Tooltip content={<CustomTooltip />} />
+                  <Tooltip content={<CustomTooltip />} allowEscapeViewBox={{ x: true, y: true }} cursor={{ stroke: 'rgba(20, 184, 166, 0.4)', strokeWidth: 1 }} />
                   <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
                   <Area
                     type="monotone"
@@ -335,7 +335,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
           </div>
 
           {/* Chart 4: 6-Month Spending & Trend */}
-          <div className="p-5 rounded-2xl bg-white/70 dark:bg-obsidian-900/80 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-gold-500/40 transition-all space-y-4">
+          <div className="spotlight-card p-5 rounded-2xl bg-white/70 dark:bg-obsidian-900/80 backdrop-blur-md border border-slate-200 dark:border-teal-900/30 shadow-md hover:border-gold-500/40 transition-all space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-obsidian-800 pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-gold-400" />
@@ -352,7 +352,7 @@ export const AnalyticsCharts: React.FC<AnalyticsChartsProps> = ({
                   <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.3} />
                   <XAxis dataKey="monthLabel" stroke="#64748b" fontSize={11} tickLine={false} />
                   <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
-                  <Tooltip content={<CustomTooltip />} />
+                  <Tooltip content={<CustomTooltip />} allowEscapeViewBox={{ x: true, y: true }} cursor={{ fill: 'rgba(212, 175, 55, 0.12)' }} />
                   <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
                   <Bar dataKey="costInr" name="Estimated Cost (₹)" fill="#D4AF37" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" />
                   <Bar dataKey="solidG" name="Solid Bar (g)" fill="#14B8A6" radius={[4, 4, 0, 0]} animationDuration={800} animationEasing="ease-out" />

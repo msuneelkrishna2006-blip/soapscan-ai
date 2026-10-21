@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import {
   InventoryItem,
@@ -23,7 +23,7 @@ import {
   exportUsageEventsToCSV,
 } from './lib/api';
 import { useRealtimeTelemetry } from './lib/useRealtimeTelemetry';
-import { Navbar } from './components/Navbar';
+import { Navbar, CosmicIntensityMode } from './components/Navbar';
 import { DashboardView } from './components/DashboardView';
 import { CosmicHomePage } from './components/views/CosmicHomePage';
 import { CosmicLoginPage } from './components/views/CosmicLoginPage';
@@ -45,7 +45,7 @@ export const App: React.FC = () => {
   const [isAuthChecking, setIsAuthChecking] = useState<boolean>(true);
 
   // Cosmic 3D Ambient Canvas Intensity & Warp state
-  const [cosmicIntensity, setCosmicIntensity] = useState<'low' | 'medium' | 'high'>('medium');
+  const [cosmicIntensity, setCosmicIntensity] = useState<CosmicIntensityMode>('medium');
   const [isWarping, setIsWarping] = useState<boolean>(false);
 
   // Authentic User-Scoped Data States (100% Real User Data)
@@ -129,6 +129,110 @@ export const App: React.FC = () => {
       .finally(() => {
         setIsAuthChecking(false);
       });
+  }, []);
+
+  // Power-User Keyboard Shortcuts (S for Scan Soap, 1-6 for Tabs, Escape for Modals)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'SELECT' ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+
+      if (e.key === 'Escape') {
+        setIsScanModalOpen(false);
+        setIsLogModalOpen(false);
+        setIsSettingsModalOpen(false);
+        return;
+      }
+
+      if (!currentUser) return;
+
+      if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        setIsScanModalOpen(prev => !prev);
+      } else if (e.key === '1') {
+        e.preventDefault();
+        setCurrentView('home');
+      } else if (e.key === '2') {
+        e.preventDefault();
+        setCurrentView('dashboard');
+      } else if (e.key === '3') {
+        e.preventDefault();
+        setCurrentView('inventory');
+      } else if (e.key === '4') {
+        e.preventDefault();
+        setCurrentView('history');
+      } else if (e.key === '5') {
+        e.preventDefault();
+        setCurrentView('analytics');
+      } else if (e.key === '6') {
+        e.preventDefault();
+        setCurrentView('family');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentUser]);
+
+  // Touch Swipe Gesture for Tab Navigation on Mobile (60fps physics)
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+    };
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartRef.current) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartRef.current.x;
+    const deltaY = e.changedTouches[0].clientY - touchStartRef.current.y;
+    touchStartRef.current = null;
+
+    if (Math.abs(deltaX) > 65 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      const tabOrder: Array<'home' | 'dashboard' | 'inventory' | 'history' | 'analytics' | 'family'> = [
+        'home',
+        'dashboard',
+        'inventory',
+        'history',
+        'analytics',
+        'family',
+      ];
+      const currentIndex = tabOrder.indexOf(currentView);
+      if (deltaX < 0 && currentIndex < tabOrder.length - 1) {
+        setCurrentView(tabOrder[currentIndex + 1]);
+      } else if (deltaX > 0 && currentIndex > 0) {
+        setCurrentView(tabOrder[currentIndex - 1]);
+      }
+    }
+  };
+
+  // Dynamic Radial Spotlight Cursor Tracker (60fps rAF throttled)
+  useEffect(() => {
+    let rafId: number | null = null;
+    const handlePointerMove = (e: PointerEvent) => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        document.documentElement.style.setProperty('--spotlight-x', `${e.clientX}px`);
+        document.documentElement.style.setProperty('--spotlight-y', `${e.clientY}px`);
+        rafId = null;
+      });
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // AI status check
@@ -396,7 +500,11 @@ export const App: React.FC = () => {
       {/* Sparse Animated Teal & Gold Depth Particles with Reduced-Motion Fallback */}
       <AmbientParticles density={cosmicIntensity === 'low' ? 'low' : 'medium'} />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 relative z-10">
+      <main
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-8 pb-28 md:pb-8 relative z-10 overflow-x-hidden touch-pan-y"
+      >
         <AnimatePresence mode="wait">
           <PageTransition key={currentView} viewKey={currentView}>
             {currentView === 'home' && (

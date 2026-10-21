@@ -11,10 +11,10 @@ import {
   Eye,
   EyeOff,
   AlertCircle,
-  Zap,
+  Loader2,
 } from 'lucide-react';
 import { UserProfile, AIStatus } from '../../types/soap';
-import { loginUser, registerUser, demoLogin } from '../../lib/api';
+import { loginUser, registerUser } from '../../lib/api';
 import { springPhysics } from '../../lib/motionVariants';
 
 interface CosmicLoginPageProps {
@@ -40,6 +40,7 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
 
   // Status & Warp
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [shakeKey, setShakeKey] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isWarping, setIsWarping] = useState(false);
 
@@ -51,32 +52,37 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
     }, 650);
   };
 
+  const triggerError = (msg: string) => {
+    setErrorMessage(msg);
+    setShakeKey(prev => prev + 1);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
 
     if (authMode === 'register') {
       if (!name.trim()) {
-        setErrorMessage('Please enter your full name.');
+        triggerError('Please enter your full name.');
         return;
       }
       if (password.length < 6) {
-        setErrorMessage('Password must be at least 6 characters long.');
+        triggerError('Password must be at least 6 characters long.');
         return;
       }
       if (password !== confirmPassword) {
-        setErrorMessage('Passwords do not match.');
+        triggerError('Passwords do not match.');
         return;
       }
     }
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setErrorMessage('Please enter a valid email address.');
+      triggerError('Please enter a valid email address.');
       return;
     }
 
     if (!password) {
-      setErrorMessage('Please enter your password.');
+      triggerError('Please enter your password.');
       return;
     }
 
@@ -98,20 +104,7 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
         handleSuccessfulAuth(response.user);
       }
     } catch (err: any) {
-      setErrorMessage(err.message || 'Authentication failed. Please check your credentials.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleInstantCommander = async () => {
-    setErrorMessage(null);
-    setIsSubmitting(true);
-    try {
-      const response = await demoLogin();
-      handleSuccessfulAuth(response.user);
-    } catch (err: any) {
-      setErrorMessage(err.message || 'Instant Commander Login failed.');
+      triggerError(err.message || 'Authentication failed. Please check your credentials.');
     } finally {
       setIsSubmitting(false);
     }
@@ -166,9 +159,10 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
 
         {/* Portal Card with Spring Entrance & Conic-Gradient Border Beam */}
         <motion.div
+          key={shakeKey}
           initial={{ opacity: 0, scale: 0.94, y: 16 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={springPhysics}
+          animate={shakeKey > 0 ? { x: [-12, 12, -8, 8, -4, 4, 0], opacity: 1, scale: 1, y: 0 } : { opacity: 1, scale: 1, y: 0 }}
+          transition={shakeKey > 0 ? { duration: 0.42 } : springPhysics}
           className="relative rounded-3xl p-[1.5px] overflow-hidden shadow-2xl"
         >
           {/* Animated Conic Border Beam */}
@@ -208,10 +202,14 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
             </div>
 
             {errorMessage && (
-              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>{errorMessage}</span>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-start gap-2 shadow-[0_0_15px_rgba(239,68,68,0.2)]"
+              >
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-400" />
+                <span className="font-medium">{errorMessage}</span>
+              </motion.div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -229,7 +227,7 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
                         value={name}
                         onChange={e => setName(e.target.value)}
                         placeholder="e.g. Suneel Hegde"
-                        className="w-full pl-9 pr-3 py-2.5 bg-obsidian-900/90 border border-obsidian-700 focus:border-teal-400 focus:ring-2 focus:ring-emerald-400/40 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none transition"
+                        className="w-full pl-9 pr-3 py-2.5 bg-obsidian-900/90 border border-obsidian-700 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/40 focus:shadow-[0_0_15px_rgba(6,182,212,0.35)] rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none transition-all duration-200"
                       />
                     </div>
                   </div>
@@ -245,7 +243,7 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
                         value={householdName}
                         onChange={e => setHouseholdName(e.target.value)}
                         placeholder="e.g. Suneel's Smart Household"
-                        className="w-full pl-9 pr-3 py-2.5 bg-obsidian-900/90 border border-obsidian-700 focus:border-teal-400 focus:ring-2 focus:ring-emerald-400/40 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none transition"
+                        className="w-full pl-9 pr-3 py-2.5 bg-obsidian-900/90 border border-obsidian-700 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/40 focus:shadow-[0_0_15px_rgba(6,182,212,0.35)] rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none transition-all duration-200"
                       />
                     </div>
                   </div>
@@ -264,7 +262,7 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     placeholder="commander@soapscan.io"
-                    className="w-full pl-9 pr-3 py-2.5 bg-obsidian-900/90 border border-obsidian-700 focus:border-teal-400 focus:ring-2 focus:ring-emerald-400/40 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none transition"
+                    className="w-full pl-9 pr-3 py-2.5 bg-obsidian-900/90 border border-obsidian-700 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/40 focus:shadow-[0_0_15px_rgba(6,182,212,0.35)] rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none transition-all duration-200"
                   />
                 </div>
               </div>
@@ -281,7 +279,7 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-9 pr-10 py-2.5 bg-obsidian-900/90 border border-obsidian-700 focus:border-teal-400 focus:ring-2 focus:ring-emerald-400/40 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none transition"
+                    className="w-full pl-9 pr-10 py-2.5 bg-obsidian-900/90 border border-obsidian-700 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/40 focus:shadow-[0_0_15px_rgba(6,182,212,0.35)] rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none transition-all duration-200"
                   />
                   <button
                     type="button"
@@ -306,7 +304,7 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
                       value={confirmPassword}
                       onChange={e => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-9 pr-3 py-2.5 bg-obsidian-900/90 border border-obsidian-700 focus:border-teal-400 focus:ring-2 focus:ring-emerald-400/40 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none transition"
+                      className="w-full pl-9 pr-3 py-2.5 bg-obsidian-900/90 border border-obsidian-700 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/40 focus:shadow-[0_0_15px_rgba(6,182,212,0.35)] rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none transition-all duration-200"
                     />
                   </div>
                 </div>
@@ -315,27 +313,25 @@ export const CosmicLoginPage: React.FC<CosmicLoginPageProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="relative overflow-hidden w-full py-3 bg-gradient-to-r from-teal-500 via-emerald-400 to-cyan-400 hover:from-teal-400 hover:to-cyan-300 text-obsidian-950 font-black text-sm rounded-xl shadow-lg shadow-teal-500/25 transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 group"
+                className="relative overflow-hidden w-full py-3.5 bg-gradient-to-r from-teal-500 via-emerald-400 to-cyan-400 hover:from-teal-400 hover:to-cyan-300 text-obsidian-950 font-black text-sm rounded-xl shadow-lg shadow-teal-500/25 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed group"
               >
                 {/* Sweeping Light-Sheen on Hover */}
                 <div className="absolute inset-0 w-1/3 bg-white/40 blur-[2px] -skew-x-12 -translate-x-[200%] group-hover:translate-x-[450%] transition-transform duration-1000 ease-in-out pointer-events-none" />
-                <span className="relative z-10">{authMode === 'signin' ? 'Sign In & Warp to Dashboard' : 'Create Household & Warp'}</span>
-                <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
+                {isSubmitting ? (
+                  <span className="relative z-10 flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-obsidian-950" />
+                    <span>Warping to Quantum Core...</span>
+                  </span>
+                ) : (
+                  <>
+                    <span className="relative z-10">
+                      {authMode === 'signin' ? 'Sign In & Warp to Dashboard' : 'Create Household & Warp'}
+                    </span>
+                    <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </button>
             </form>
-
-            {/* 1-Click Instant Commander Login */}
-            <div className="pt-2 border-t border-teal-900/40">
-              <button
-                type="button"
-                onClick={handleInstantCommander}
-                disabled={isSubmitting}
-                className="w-full py-2.5 bg-obsidian-900/90 hover:bg-obsidian-800 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Zap className="w-4 h-4 text-amber-400 fill-amber-400" />
-                <span>Instant Commander Login (Suneel's Household)</span>
-              </button>
-            </div>
           </div>
         </motion.div>
 

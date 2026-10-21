@@ -267,4 +267,45 @@ body {
   animation: shimmerText 6s linear infinite;
 }
 
+/* Dynamic Radial Spotlight Effect */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    480px circle at var(--spotlight-x, -9999px) var(--spotlight-y, -9999px),
+    rgba(20, 184, 166, 0.45),
+    rgba(212, 175, 55, 0.2) 30%,
+    transparent 65%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+/* Touch-action and Mobile Viewport Polish */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  touch-action: pan-y pinch-zoom;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
 
