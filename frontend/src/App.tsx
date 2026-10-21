@@ -34,6 +34,8 @@ import { FamilyManager } from './components/FamilyManager';
 import { ScanSoapModal } from './components/ScanSoapModal';
 import { LogUsageModal } from './components/LogUsageModal';
 import { SettingsModal } from './components/SettingsModal';
+import { LicenseModal } from './components/LicenseModal';
+import { ShieldCheck } from 'lucide-react';
 import { CosmicUniverse3D } from './components/three/CosmicUniverse3D';
 import { AmbientParticles } from './components/animation/AmbientParticles';
 import { PageTransition } from './components/animation/PageTransition';
@@ -76,6 +78,7 @@ export const App: React.FC = () => {
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const [selectedSoapItem, setSelectedSoapItem] = useState<InventoryItem | null>(null);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isLicenseModalOpen, setIsLicenseModalOpen] = useState(false);
 
   // Award-Quality Toast Notification State
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -149,6 +152,7 @@ export const App: React.FC = () => {
         setIsScanModalOpen(false);
         setIsLogModalOpen(false);
         setIsSettingsModalOpen(false);
+        setIsLicenseModalOpen(false);
         return;
       }
 
@@ -458,7 +462,7 @@ export const App: React.FC = () => {
         <CosmicUniverse3D
           warpActive={isWarping}
           intensity={cosmicIntensity}
-          showSoapCore={true}
+          showSoapCore={false}
           interactiveParallax={true}
         />
         <CosmicLoginPage
@@ -476,7 +480,7 @@ export const App: React.FC = () => {
       <CosmicUniverse3D
         warpActive={isWarping}
         intensity={cosmicIntensity}
-        showSoapCore={currentView === 'home'}
+        showSoapCore={false}
         interactiveParallax={true}
       />
 
@@ -578,22 +582,49 @@ export const App: React.FC = () => {
         </AnimatePresence>
       </main>
 
-      <footer className="mt-auto border-t border-teal-900/40 bg-obsidian-950/90 backdrop-blur py-4 text-center text-xs text-slate-400 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-white">SoapScan AI</span>
-            <span>—</span>
-            <span>{currentUser.householdName}</span>
+      {/* Enterprise Two-Tier Copyright & Telemetry Governance Footer */}
+      <footer
+        style={{ borderTop: '1px solid rgba(20, 184, 166, 0.2)' }}
+        className="mt-auto bg-obsidian-950/95 backdrop-blur-xl py-5 text-center text-xs text-slate-400 relative z-10 mb-20 md:mb-0"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3.5">
+          {/* Primary Brand & Telemetry Row */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 pb-3 border-b border-teal-900/30">
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-white tracking-wide">SoapScan AI</span>
+              <span className="text-teal-500/50">—</span>
+              <span className="text-slate-300 font-medium">{currentUser.householdName}</span>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-[11px] font-mono text-slate-400">
+              <span className="text-teal-300/80">Authentic User Data Isolated</span>
+              <span className="text-teal-700">•</span>
+              <span className="text-emerald-400/80">SSE Real-Time Sync</span>
+              <span className="text-teal-700">•</span>
+              <span className="text-cyan-300/80">Local Gemma 4 Multimodal Intelligence</span>
+            </div>
           </div>
-          <div className="flex items-center gap-4 text-[11px] font-mono">
-            <span>Authentic User Data Isolated</span>
-            <span>•</span>
-            <span>SSE Real-Time Sync</span>
-            <span>•</span>
-            <span>Local Gemma 4 Multimodal Intelligence</span>
+
+          {/* Official Copyright & License Row */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-slate-500 font-mono">
+            <p className="text-center md:text-left leading-relaxed max-w-4xl">
+              &copy; 2026 SoapScan AI. All Rights Reserved. Licensed under the SoapScan AI Proprietary Telemetry &amp; Digital Twin License. Unauthorized reproduction, distribution, or reverse engineering is strictly prohibited.
+            </p>
+            <button
+              onClick={() => setIsLicenseModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 hover:text-teal-200 border border-teal-500/30 transition text-[11px] font-mono shrink-0 cursor-pointer shadow-sm group"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-teal-400 group-hover:scale-110 transition-transform" />
+              <span>License &amp; Legal</span>
+            </button>
           </div>
         </div>
       </footer>
+
+      <LicenseModal
+        isOpen={isLicenseModalOpen}
+        onClose={() => setIsLicenseModalOpen(false)}
+        householdName={currentUser.householdName}
+      />
 
       <ScanSoapModal
         isOpen={isScanModalOpen}

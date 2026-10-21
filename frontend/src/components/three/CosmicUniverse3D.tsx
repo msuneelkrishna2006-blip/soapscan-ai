@@ -255,7 +255,7 @@ const GyroscopeSoapCore: React.FC<{ mousePos: { x: number; y: number }; warpActi
 export const CosmicUniverse3D: React.FC<CosmicUniverse3DProps> = ({
   warpActive = false,
   onWarpComplete,
-  showSoapCore = true,
+  showSoapCore = false,
   interactiveParallax = true,
   intensity = 'medium',
 }) => {

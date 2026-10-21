@@ -138,7 +138,7 @@ const HeroOrbitalPlanet: React.FC<{ onPlanetClick?: () => void }> = ({ onPlanetC
         <group position={[0, 0, 0]}>
           {/* Central Glowing Planet Core (Interactive Click/Tap to Pulse) */}
           <mesh ref={planetRef} onClick={triggerPulse} onPointerDown={handlePointerDown}>
-            <sphereGeometry args={[1.2, 32, 32]} />
+            <sphereGeometry args={[1.05, 32, 32]} />
             <meshStandardMaterial
               color="#10b981"
               emissive="#06b6d4"
@@ -150,7 +150,7 @@ const HeroOrbitalPlanet: React.FC<{ onPlanetClick?: () => void }> = ({ onPlanetC
 
           {/* Pulse Shockwave Ring */}
           <mesh ref={shockwaveRef} rotation={[Math.PI / 2, 0, 0]} visible={false}>
-            <ringGeometry args={[1.15, 1.35, 64]} />
+            <ringGeometry args={[1.05, 1.25, 64]} />
             <meshBasicMaterial
               color="#22d3ee"
               transparent
@@ -163,7 +163,7 @@ const HeroOrbitalPlanet: React.FC<{ onPlanetClick?: () => void }> = ({ onPlanetC
           {/* Gyroscopic Ring 1 (Emerald/Cyan) */}
           <group ref={ring1Ref} rotation={[0.6, 0.4, 0]}>
             <mesh>
-              <torusGeometry args={[2.0, 0.045, 16, 80]} />
+              <torusGeometry args={[1.75, 0.04, 16, 80]} />
               <meshStandardMaterial
                 color="#22d3ee"
                 emissive="#10b981"
@@ -176,7 +176,7 @@ const HeroOrbitalPlanet: React.FC<{ onPlanetClick?: () => void }> = ({ onPlanetC
           {/* Gyroscopic Ring 2 (Solar Amber) */}
           <group ref={ring2Ref} rotation={[-0.5, 0.8, 0]}>
             <mesh>
-              <torusGeometry args={[2.5, 0.038, 16, 80]} />
+              <torusGeometry args={[2.15, 0.035, 16, 80]} />
               <meshStandardMaterial
                 color="#f59e0b"
                 emissive="#f59e0b"
@@ -189,7 +189,7 @@ const HeroOrbitalPlanet: React.FC<{ onPlanetClick?: () => void }> = ({ onPlanetC
           {/* Gyroscopic Ring 3 (Outer Azure Orbit) */}
           <group ref={ring3Ref} rotation={[1.1, -0.3, 0.4]}>
             <mesh>
-              <torusGeometry args={[2.9, 0.025, 16, 96]} />
+              <torusGeometry args={[2.5, 0.025, 16, 96]} />
               <meshStandardMaterial
                 color="#38bdf8"
                 emissive="#0284c7"
@@ -220,49 +220,56 @@ export const CosmicHomePage: React.FC<CosmicHomePageProps> = ({
   const titleWords = ['SoapScan', 'AI'];
 
   return (
-    <div className="relative min-h-[calc(100vh-140px)] flex flex-col justify-between z-10 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto text-slate-100">
+    <div className="relative min-h-[calc(100vh-140px)] flex flex-col justify-between z-10 px-4 sm:px-6 lg:px-8 pt-4 pb-28 md:pb-12 max-w-7xl mx-auto text-slate-100">
       {/* 1. HERO SECTION */}
-      <div className="text-center space-y-6 pt-2 sm:pt-6 max-w-4xl mx-auto">
+      <div className="text-center space-y-5 pt-2 sm:pt-4 max-w-4xl mx-auto">
         {/* 3D Interactive Orbital Planet Hero (Web & Mobile Drag/Touch/Pulse) */}
-        <div className="w-48 h-48 sm:w-56 sm:h-56 mx-auto relative cursor-grab active:cursor-grabbing touch-none select-none">
-          <Canvas
-            camera={{ position: [0, 0, 5.8], fov: 45 }}
-            gl={{ alpha: true, antialias: true }}
-            style={{ background: 'transparent' }}
-          >
-            <ambientLight intensity={0.75} />
-            <directionalLight position={[5, 5, 5]} intensity={1.9} color="#22d3ee" />
-            <directionalLight position={[-5, -5, -3]} intensity={1.6} color="#f59e0b" />
-            <HeroOrbitalPlanet onPlanetClick={() => setCoreRippleCount(c => c + 1)} />
-          </Canvas>
-          {/* Subtle energetic underglow aura */}
-          <div className="absolute inset-4 rounded-full bg-emerald-500/20 blur-2xl pointer-events-none -z-10 animate-pulse" />
-          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[10px] font-mono text-cyan-300/70 tracking-wider pointer-events-none uppercase">
-            Drag to Rotate • Tap to Pulse
+        <div className="flex flex-col items-center justify-center mb-6">
+          <div className="w-[220px] h-[220px] sm:w-[260px] sm:h-[260px] relative cursor-grab active:cursor-grabbing touch-none select-none">
+            <Canvas
+              camera={{ position: [0, 0, 5.8], fov: 45 }}
+              gl={{ alpha: true, antialias: true }}
+              style={{ background: 'transparent' }}
+            >
+              <ambientLight intensity={0.75} />
+              <directionalLight position={[5, 5, 5]} intensity={1.9} color="#22d3ee" />
+              <directionalLight position={[-5, -5, -3]} intensity={1.6} color="#f59e0b" />
+              <HeroOrbitalPlanet onPlanetClick={() => setCoreRippleCount(c => c + 1)} />
+            </Canvas>
+            {/* Subtle energetic underglow aura */}
+            <div className="absolute inset-8 rounded-full bg-emerald-500/15 blur-2xl pointer-events-none -z-10 animate-pulse" />
+          </div>
+
+          {/* Refined subtle pill badge neatly positioned below orbital ring perimeter */}
+          <div className="mt-1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-obsidian-950/75 border border-teal-500/25 backdrop-blur-md text-[10px] tracking-[0.12em] font-mono text-cyan-300/65 uppercase shadow-sm pointer-events-none select-none">
+            <span>Drag to Rotate</span>
+            <span className="text-teal-500/40">•</span>
+            <span>Tap to Pulse</span>
           </div>
         </div>
 
-        {/* Interactive Status Pill with Mini-Popover */}
-        <div className="relative inline-block">
+        {/* Interactive Status Pill with Mini-Popover (Mobile-Optimized Layout) */}
+        <div className="relative inline-block max-w-full">
           <motion.button
             type="button"
             onClick={() => setShowTelemetryPopover(prev => !prev)}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-obsidian-950/90 hover:bg-obsidian-900 border border-teal-500/40 hover:border-teal-400 backdrop-blur shadow-lg shadow-teal-500/10 transition-all cursor-pointer group"
+            className="inline-flex flex-wrap sm:flex-nowrap items-center justify-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-obsidian-950/90 hover:bg-obsidian-900 border border-teal-500/40 hover:border-teal-400 backdrop-blur shadow-lg shadow-teal-500/10 transition-all cursor-pointer group max-w-full text-center"
             title="Click to view live connection telemetry and FPS stats"
           >
-            <span className="relative flex h-2.5 w-2.5">
+            <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5 shrink-0">
               <span className="animate-sonar-radar absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+              <span className="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 bg-emerald-500" />
             </span>
-            <span className="text-xs font-mono font-bold tracking-wider text-teal-300 uppercase">
-              {aiStatus?.online ? 'GEMMA 4 LOCAL AI ONLINE (LATENCY: ~12MS)' : 'Cosmic Telemetry System Active'}
+            <span className="text-[11px] sm:text-xs font-mono font-bold tracking-wider text-teal-300 uppercase">
+              {aiStatus?.online ? 'GEMMA 4 LOCAL AI ONLINE' : 'Cosmic Telemetry System'}
             </span>
-            <span className="text-slate-500">•</span>
-            <span className="text-xs text-amber-300 font-medium font-mono">
+            <span className="text-[10px] sm:text-xs text-teal-400/70 font-mono">(~12MS)</span>
+            <span className="text-slate-500 hidden xs:inline">•</span>
+            <span className="text-[10px] sm:text-xs text-amber-300 font-medium font-mono">
               {import.meta.env.PROD ? 'Cloud Mesh Live' : 'Port 5173 / 3001'}
             </span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded bg-teal-500/20 text-teal-300 font-mono ml-1">
+            <span className="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300 font-mono font-bold ml-0.5 border border-teal-500/30">
               STATS
             </span>
           </motion.button>
@@ -406,7 +413,10 @@ export const CosmicHomePage: React.FC<CosmicHomePageProps> = ({
         {/* Showcase Card 1 */}
         <motion.div variants={staggerItem}>
           <TiltCard3D maxTilt={6} spotlightColor="16, 185, 129">
-            <div className="p-6 rounded-3xl bg-obsidian-950/85 border border-teal-500/30 hover:border-teal-400 shadow-xl backdrop-blur-xl h-full flex flex-col justify-between space-y-4 group">
+            <div
+              style={{ background: 'rgba(6, 18, 20, 0.85)', backdropFilter: 'blur(16px)' }}
+              className="spotlight-card p-6 rounded-3xl border border-teal-500/30 hover:border-teal-400 shadow-xl backdrop-blur-xl h-full flex flex-col justify-between space-y-4 group"
+            >
               <div className="space-y-3">
                 <div className="w-12 h-12 rounded-2xl bg-teal-500/15 text-teal-400 flex items-center justify-center border border-teal-500/30 group-hover:scale-105 transition-transform">
                   <Barcode className="w-6 h-6" />
@@ -414,7 +424,7 @@ export const CosmicHomePage: React.FC<CosmicHomePageProps> = ({
                 <h3 className="text-lg font-black text-white group-hover:text-teal-300 transition">
                   Gemma 4 Vision &amp; Barcode Scanner
                 </h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed">
                   Scan Indian FMCG barcodes (Mysore Sandal, Dove, Dettol, Pears) or point your webcam hands-free. Local Gemma 4 instantly extracts brand, weight, price, and color specs in under 10ms.
                 </p>
               </div>
@@ -429,7 +439,10 @@ export const CosmicHomePage: React.FC<CosmicHomePageProps> = ({
         {/* Showcase Card 2 */}
         <motion.div variants={staggerItem}>
           <TiltCard3D maxTilt={6} spotlightColor="245, 158, 11">
-            <div className="p-6 rounded-3xl bg-obsidian-950/85 border border-amber-500/30 hover:border-amber-400 shadow-xl backdrop-blur-xl h-full flex flex-col justify-between space-y-4 group">
+            <div
+              style={{ background: 'rgba(6, 18, 20, 0.85)', backdropFilter: 'blur(16px)' }}
+              className="spotlight-card p-6 rounded-3xl border border-amber-500/30 hover:border-amber-400 shadow-xl backdrop-blur-xl h-full flex flex-col justify-between space-y-4 group"
+            >
               <div className="space-y-3">
                 <div className="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-400 flex items-center justify-center border border-amber-500/30 group-hover:scale-105 transition-transform">
                   <Box className="w-6 h-6" />
@@ -437,7 +450,7 @@ export const CosmicHomePage: React.FC<CosmicHomePageProps> = ({
                 <h3 className="text-lg font-black text-white group-hover:text-amber-300 transition">
                   Real-Time 3D Digital Twin Depletion
                 </h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed">
                   Watch soaps visually morph, bevel, and deplete in 3D WebGL space. Solid soap bars curve and wear down, while liquid soap pump dispensers physically lower their liquid column.
                 </p>
               </div>
@@ -452,7 +465,10 @@ export const CosmicHomePage: React.FC<CosmicHomePageProps> = ({
         {/* Showcase Card 3 */}
         <motion.div variants={staggerItem}>
           <TiltCard3D maxTilt={6} spotlightColor="6, 182, 212">
-            <div className="p-6 rounded-3xl bg-obsidian-950/85 border border-cyan-500/30 hover:border-cyan-400 shadow-xl backdrop-blur-xl h-full flex flex-col justify-between space-y-4 group">
+            <div
+              style={{ background: 'rgba(6, 18, 20, 0.85)', backdropFilter: 'blur(16px)' }}
+              className="spotlight-card p-6 rounded-3xl border border-cyan-500/30 hover:border-cyan-400 shadow-xl backdrop-blur-xl h-full flex flex-col justify-between space-y-4 group"
+            >
               <div className="space-y-3">
                 <div className="w-12 h-12 rounded-2xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center border border-cyan-500/30 group-hover:scale-105 transition-transform">
                   <Activity className="w-6 h-6" />
@@ -460,7 +476,7 @@ export const CosmicHomePage: React.FC<CosmicHomePageProps> = ({
                 <h3 className="text-lg font-black text-white group-hover:text-cyan-300 transition">
                   Precision Scale &amp; Pump Telemetry
                 </h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed">
                   Connect real kitchen or bathroom scales, or use 1-click micro-dosing buttons (-1.5 mL pumps or -4g washes). Server-Sent Events (SSE) broadcast updates instantly across all household devices.
                 </p>
               </div>
